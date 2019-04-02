@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tenewallet/Market/coin_details.dart';
+import 'package:flutter_sparkline/flutter_sparkline.dart';
 
 class MarketPage extends StatefulWidget {
   @override
@@ -76,10 +77,12 @@ class _MarketPageState extends State<MarketPage> {
               ),
             ),
             TableCell(
-              child: Column(
-                children: <Widget>[
-                  Text(market[i]["trend"]),
-                ],
+              child: Container(
+                height: 40,
+                child: Sparkline(
+                  data: [1.0, 2.0, 3.0, 1.0, 1.0, 0.0, 1.0, 2.0, 3.0, 2.0, 1.0, 0.0],
+                  lineColor: Colors.lightBlue,
+                ),
               ),
             )
           ],

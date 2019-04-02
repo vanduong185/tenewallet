@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tenewallet/Wallet/confirm_sending.dart';
+import "package:qrcode_reader/qrcode_reader.dart";
 
 class  SendingPage extends StatefulWidget {
   var _crypto;
@@ -24,6 +25,15 @@ class _SendingPageState extends State<SendingPage> {
     this.crypto = crypto;
   }
 
+  openQrReader() {
+    Future<String> futureString = new QRCodeReader().setAutoFocusIntervalInMs(200).setForceAutoFocus(true).setTorchEnabled(true).setHandlePermissions(true).setExecuteAfterPermissionGranted(true).scan();
+    futureString.then((string) {
+      setState(() {
+        eCtrl1.text = string;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -46,8 +56,6 @@ class _SendingPageState extends State<SendingPage> {
                       "recipent_address": recipent_address,
                       "sent_crypto_amount": sent_crypto_amount
                     };
-
-                    print(transaction);
 
                     Navigator.push(
                         context,
@@ -81,31 +89,42 @@ class _SendingPageState extends State<SendingPage> {
                         setState(() {
                           this.recipent_address = text;
                         })
-                      }
+                      },
+                      decoration: InputDecoration(
+                        suffixIcon: GestureDetector(
+                          child: Icon(Icons.apps, color: Colors.black54,),
+                          onTap: () {
+                            this.openQrReader();
+                          },
+                        )
+                      ),
                     )
                   ],
                 ),
               ),
             ),
-            Container(
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text(crypto["name"])
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.start,
-                  ),
-                  TextField(
-                    controller: eCtrl2,
-                    keyboardType: TextInputType.number,
-                    onSubmitted: (number) => {
-                      setState(() {
-                        this.sent_crypto_amount = number;
-                      })
-                    }
-                  )
-                ],
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Container(
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Text(crypto["name"])
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.start,
+                    ),
+                    TextField(
+                      controller: eCtrl2,
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (number) => {
+                        setState(() {
+                          this.sent_crypto_amount = number;
+                        })
+                      }
+                    )
+                  ],
+                ),
               ),
             )
           ],

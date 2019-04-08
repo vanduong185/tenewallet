@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import "package:tenewallet/Authentication/enter_pin_code.dart";
 import "package:tenewallet/Authentication/create_pin_code.dart";
+import "package:tenewallet/components/splash.dart";
 import "package:shared_preferences/shared_preferences.dart";
+import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
+import 'dart:async';
 
-void main() {
+List<CameraDescription> cameras;
+
+Future<Null> main() async{
   SystemChrome.setSystemUIOverlayStyle(new SystemUiOverlayStyle(
-    statusBarColor: Colors.lightBlue[800]
+    statusBarColor: Color(0xFF1980BA)
   ));
-  return runApp(MyApp());
+
+  cameras = await availableCameras();
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -31,7 +38,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    get_pin_code();
+    //Future.delayed(Duration(milliseconds: 5000), () => get_pin_code());
+    //get_pin_code();
   }
 
   @override
@@ -41,7 +49,8 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: pin_code == null ? CreatePinScreen() : EnterPinScreen(),
+      //home: pin_code == null ? CreatePinScreen() : EnterPinScreen(),
+      home: Splash(cameras),
       debugShowCheckedModeBanner: false,
     );
   }

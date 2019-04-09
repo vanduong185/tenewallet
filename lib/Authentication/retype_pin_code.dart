@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tenewallet/MainController/main_controller.dart';
+import 'package:tenewallet/MainController/main_controller2.dart';
+import 'package:pin_code_text_field/pin_code_text_field.dart';
 
 class RetypePinScreen extends StatefulWidget {
   String _created_pin;
+  var cameras;
 
-  RetypePinScreen(this._created_pin);
+  RetypePinScreen(this._created_pin, this.cameras);
 
   @override
   _RetypePinScreenState createState() => _RetypePinScreenState(_created_pin);
@@ -14,6 +17,8 @@ class RetypePinScreen extends StatefulWidget {
 class _RetypePinScreenState extends State<RetypePinScreen> {
   List<TextEditingController> _eCtrls;
   List<String> _pin;
+  TextEditingController et = new TextEditingController();
+  String pin_code;
 
   String _created_pin;
 
@@ -29,8 +34,8 @@ class _RetypePinScreenState extends State<RetypePinScreen> {
   }
 
   bool checkPinCode() {
-    String pin_code = _pin.join();
-    print(pin_code);
+//    String pin_code = _pin.join();
+//    print(pin_code);
     return ( pin_code == _created_pin);
   }
 
@@ -77,7 +82,7 @@ class _RetypePinScreenState extends State<RetypePinScreen> {
                     if (result == true) {
                       print("ok");
                       Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => MainController()),
+                          MaterialPageRoute(builder: (context) => MainController2(widget.cameras)),
                               (Route<dynamic> route) => false
                       );
                     }
@@ -99,10 +104,30 @@ class _RetypePinScreenState extends State<RetypePinScreen> {
                   padding: const EdgeInsets.only(bottom: 50),
                   child: Text("Retype your PIN code", style: TextStyle( fontSize: 20, fontWeight: FontWeight.w500)),
                 ),
-                Row(
-                  children: generateListBlockField(),
-                  mainAxisAlignment: MainAxisAlignment.center,
-                )
+                PinCodeTextField(
+                  autofocus: true,
+                  controller: et,
+                  hideCharacter: true,
+                  highlight: true,
+                  highlightColor: Colors.lightBlue[500],
+                  defaultBorderColor: Colors.black,
+                  hasTextBorderColor: Colors.lightBlue[500],
+                  maxLength: 4,
+                  maskCharacter: "●",
+                  hasError: false,
+
+                  onDone: (text){
+                    setState(() {
+                      pin_code = text;
+                    });
+                  },
+                  pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType.AUTO_ADJUST_WIDTH,
+                  wrapAlignment: WrapAlignment.start,
+                  pinBoxDecoration: ProvidedPinBoxDecoration.defaultPinBoxDecoration,
+                  pinTextStyle: TextStyle(fontSize: 30.0),
+                  pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation.defaultNoTransition,
+                  pinTextAnimatedSwitcherDuration: Duration(milliseconds: 100),
+                ),
               ],
             ),
           ),

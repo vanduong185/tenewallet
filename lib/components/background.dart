@@ -21,8 +21,8 @@ class _BackgroundState extends State<Background> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-        width: screenWidth,
-        height: screenHeight,
+//        width: screenWidth,
+//        height: screenHeight,
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topCenter,

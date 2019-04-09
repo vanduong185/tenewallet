@@ -39,15 +39,25 @@ class _SendingPageState extends State<SendingPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue[800],
-        title: Text("Send " + crypto["name"]),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        title: Text("Input", style: TextStyle(color: Color(0xFF1980BA), fontSize: 20),),
         elevation: 0,
+        iconTheme: IconThemeData(
+          color: Color(0xFF1980BA)
+        ),
+        bottom: PreferredSize(
+          child: Container(
+            height: 1,
+            color: Color(0xFF1980BA),
+          ),
+        ),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: GestureDetector(
               child: Center(
-                child: Text("NEXT", style: TextStyle( fontSize: 16, fontWeight: FontWeight.w500),),
+                child: Text("NEXT", style: TextStyle( color: Color(0xFF1980BA), fontSize: 18, fontWeight: FontWeight.w400),),
               ),
               onTap: () {
                 if (recipent_address != null && sent_crypto_amount != null) {
@@ -79,13 +89,18 @@ class _SendingPageState extends State<SendingPage> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Text("Recipent address")
+                        Text("Recipent address", style: TextStyle(color: Color(0xFF1980BA), fontSize: 16, fontWeight: FontWeight.w500),)
                       ],
                       mainAxisAlignment: MainAxisAlignment.start,
                     ),
                     TextField(
                       controller: eCtrl1,
                       onSubmitted: (text) => {
+                        setState(() {
+                          this.recipent_address = text;
+                        })
+                      },
+                      onChanged: (text) => {
                         setState(() {
                           this.recipent_address = text;
                         })
@@ -110,7 +125,7 @@ class _SendingPageState extends State<SendingPage> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Text(crypto["name"])
+                        Text(crypto["name"], style: TextStyle(color: Color(0xFF1980BA), fontSize: 16, fontWeight: FontWeight.w500))
                       ],
                       mainAxisAlignment: MainAxisAlignment.start,
                     ),
@@ -121,7 +136,27 @@ class _SendingPageState extends State<SendingPage> {
                         setState(() {
                           this.sent_crypto_amount = number;
                         })
-                      }
+                      },
+                      onChanged: (number) => {
+                        setState(() {
+                          this.sent_crypto_amount = number;
+                        })
+                      },
+                      decoration: InputDecoration(
+                        suffixIcon: GestureDetector(
+                          child: Column(
+                            children: <Widget>[
+                              Text("MAX", style: TextStyle(color: Colors.black54, fontSize: 14),)
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              eCtrl2.text = crypto["amount"];
+                            });
+                          },
+                        )
+                      ),
                     )
                   ],
                 ),

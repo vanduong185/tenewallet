@@ -88,7 +88,7 @@ class _EnterPinScreenState extends State<EnterPinScreen> {
                   if (text == pin_code) {
                     Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => Test(widget.cameras))
+                        MaterialPageRoute(builder: (context) => MainController2(widget.cameras))
                     );
                   }
                 },

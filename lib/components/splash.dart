@@ -33,7 +33,7 @@ class _SplashState extends State<Splash> {
     return new Timer(_duration, () {
       getPinCode().then((f) {
         if (pinCode == null) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CreatePinScreen()));
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CreatePinScreen(widget.cameras)));
         }
         else {
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => EnterPinScreen(widget.cameras)));

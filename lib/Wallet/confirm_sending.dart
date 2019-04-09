@@ -34,9 +34,19 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue[800],
-        title: Text("Confirm"),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        title: Text("Confirm", style: TextStyle(color: Color(0xFF1980BA), fontSize: 20),),
         elevation: 0,
+        iconTheme: IconThemeData(
+            color: Color(0xFF1980BA)
+        ),
+        bottom: PreferredSize(
+          child: Container(
+            height: 1,
+            color: Color(0xFF1980BA),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -44,24 +54,71 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(bottom: 30),
-                child: Center(
-                  child: Column(
-                    children: <Widget>[
-                      Icon(Icons.monetization_on, color: Colors.amber, size: 100),
-                      Padding(
-                          padding: const EdgeInsets.only(top: 5),
-                          child: Row(
-                            children: <Widget>[
-                              Text(transaction["sent_crypto_amount"] + " BTC", style: TextStyle(fontSize: 20),),
-                              Text("  (USD 8000)", style: TextStyle(fontSize: 14))
-                            ],
-                            mainAxisAlignment: MainAxisAlignment.center,
-                          )
-                      )
-                    ],
-                  ),
-                ),
+                padding: const EdgeInsets.only(bottom: 50),
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                          color: Color(0xFFF5B300),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFFd9d9d9),
+                              blurRadius: 10,
+                              offset: Offset.zero
+                            )
+                          ]
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Icon(
+                            Icons.attach_money,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.attach_money,
+                              color: Color(0xFF1980BA),
+                              size: 20,
+                            ),
+                            Text(
+                              "4000",
+                              style: TextStyle(
+                                  color: Color(0xFF1980BA),
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.w500),
+                            )
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Text(
+                              "0.9BTC",
+                              style: TextStyle(
+                                  color: Color(0XFF4AB7E0),
+                                  fontSize: 22,
+                                  ),
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.start,
+                        )
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.start,
+                    )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                )
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 30),
@@ -70,7 +127,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          Text("From")
+                          Text("From", style: TextStyle(color: Color(0xFF1980BA), fontSize: 16, fontWeight: FontWeight.w500),)
                         ],
                         mainAxisAlignment: MainAxisAlignment.start,
                       ),
@@ -98,7 +155,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Text("To")
+                        Text("To", style: TextStyle(color: Color(0xFF1980BA), fontSize: 16, fontWeight: FontWeight.w500))
                       ],
                       mainAxisAlignment: MainAxisAlignment.start,
                     ),
@@ -121,7 +178,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 30, bottom: 60),
+                padding: const EdgeInsets.only(top: 60, bottom: 60),
                 child: Container(
                   child: Column(
                     children: <Widget>[
@@ -129,8 +186,8 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                         padding: const EdgeInsets.only(bottom: 20),
                         child: Row(
                           children: <Widget>[
-                            Text("Network fee", style: TextStyle(fontSize: 18)),
-                            Text("0.000014 BTC", style: TextStyle(fontSize: 18))
+                            Text("Network Fee", style: TextStyle(color: Color(0xFF1980BA), fontSize: 18, fontWeight: FontWeight.w400)),
+                            Text("0.000014 BTC", style: TextStyle(fontSize: 18, color: Color(0xFF333333)))
                           ],
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         ),
@@ -139,8 +196,8 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                         padding: const EdgeInsets.only(bottom: 20),
                         child: Row(
                           children: <Widget>[
-                            Text("Max Total", style: TextStyle(fontSize: 18)),
-                            Text("8.156 USD", style: TextStyle(fontSize: 18))
+                            Text("Max Total", style: TextStyle(color: Color(0xFF1980BA), fontSize: 18, fontWeight: FontWeight.w400)),
+                            Text("8.156 USD", style: TextStyle(fontSize: 18, color: Color(0xFF333333), fontFamily: String.fromEnvironment("Montserrat")))
                           ],
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         ),
@@ -149,11 +206,23 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                   ),
                 ),
               ),
-              Container(
-                child: RaisedButton(
-                  child: Text("Confirm"),
-
+              GestureDetector(
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [const Color(0xFF1980BA), const Color(0xFF4AB7E0)],
+                          tileMode: TileMode.repeated
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(25))
+                  ),
+                  child: Center(
+                    child: Text("CONFIRM", style: TextStyle(color: Colors.white, fontSize: 16),),
+                  ),
                 ),
+                onTap: () {},
               )
             ],
           ),

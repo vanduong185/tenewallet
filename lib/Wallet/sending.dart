@@ -4,13 +4,15 @@ import "package:qrcode_reader/qrcode_reader.dart";
 
 class  SendingPage extends StatefulWidget {
   var _crypto;
+  //var QRCodeController;
 
-  SendingPage(var crypto) {
-    this._crypto = crypto;
-  }
+  SendingPage(this._crypto);
 
   @override
-  _SendingPageState createState() => _SendingPageState(_crypto);
+  _SendingPageState createState() {
+
+    return _SendingPageState(_crypto);
+  }
 }
 
 class _SendingPageState extends State<SendingPage> {
@@ -32,6 +34,17 @@ class _SendingPageState extends State<SendingPage> {
         eCtrl1.text = string;
       });
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    if (this.crypto["recipent_address"] != null) {
+      eCtrl1.text = this.crypto["recipent_address"];
+      recipent_address = this.crypto["recipent_address"];
+    }
   }
 
   @override
@@ -95,21 +108,22 @@ class _SendingPageState extends State<SendingPage> {
                     ),
                     TextField(
                       controller: eCtrl1,
-                      onSubmitted: (text) => {
+//                      onSubmitted: (text) => {
+//                        setState(() {
+//                          this.recipent_address = text;
+//                        })
+//                      },
+                      onChanged: (text) {
+                        print(text);
                         setState(() {
                           this.recipent_address = text;
-                        })
-                      },
-                      onChanged: (text) => {
-                        setState(() {
-                          this.recipent_address = text;
-                        })
+                        });
                       },
                       decoration: InputDecoration(
                         suffixIcon: GestureDetector(
                           child: Icon(Icons.apps, color: Colors.black54,),
                           onTap: () {
-                            this.openQrReader();
+                            //this.openQrReader();
                           },
                         )
                       ),
@@ -132,15 +146,16 @@ class _SendingPageState extends State<SendingPage> {
                     TextField(
                       controller: eCtrl2,
                       keyboardType: TextInputType.number,
-                      onSubmitted: (number) => {
+//                      onSubmitted: (number) => {
+//                        setState(() {
+//                          this.sent_crypto_amount = number;
+//                        })
+//                      },
+                      onChanged: (number) {
+                          print(number);
                         setState(() {
                           this.sent_crypto_amount = number;
-                        })
-                      },
-                      onChanged: (number) => {
-                        setState(() {
-                          this.sent_crypto_amount = number;
-                        })
+                        });
                       },
                       decoration: InputDecoration(
                         suffixIcon: GestureDetector(

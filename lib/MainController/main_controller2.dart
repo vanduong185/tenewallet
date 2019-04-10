@@ -18,7 +18,7 @@ class MainController2 extends StatefulWidget {
 class _MainController2State extends State<MainController2> {
   QRReaderController controller;
 
-  var crypto = {"name": "Bitcoin", "amount": "5.00"};
+  var crypto = {"name": "Bitcoin", "amount": "5.00", "recipent_address": null};
   var coin = {
     "name": "BTC",
     "value": "15454421",
@@ -36,37 +36,50 @@ class _MainController2State extends State<MainController2> {
     // TODO: implement initState
     super.initState();
 
-//    controller = new QRReaderController(widget.cameras[0], ResolutionPreset.medium,
-//        [CodeFormat.qr, CodeFormat.pdf417], onCodeRead);
-//
-//    controller.initialize().then((_) {
-//      if (!mounted) {
-//        return;
-//      }
-//
-//      if (mounted) {
-//        setState(() {});
-//        controller.startScanning();
-//      }
-//    });
+    controller = new QRReaderController(
+        widget.cameras[0], ResolutionPreset.medium, [CodeFormat.qr],
+        (dynamic value) {
+      print(value); // the result!
+      // ... do something
+      // wait 3 seconds then start scanning again.
+      //new Future.delayed(const Duration(seconds: 1), controller.startScanning);
+      setState(() {
+        crypto["recipent_address"] = value;
+        controller.dispose();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => SendingPage(crypto)));
+      });
+    });
+
+    controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+
+      if (mounted) {
+        setState(() {});
+        controller.startScanning();
+      }
+    });
   }
 
-//  @override
-//  void dispose() {
-//    // TODO: implement dispose
-//    controller?.dispose();
-//    super.dispose();
-//  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller?.dispose();
+    super.dispose();
+  }
 
-  renderCamera() {
+  Widget renderCamera() {
+    print(controller.value.isInitialized);
     if (!controller.value.isInitialized) {
-      return (Text("no camera"));
-    } else {
-      return new AspectRatio(
-        aspectRatio: controller.value.aspectRatio,
-        child: QRReaderPreview(controller),
-      );
+      return Text("No camera");
     }
+
+    return new AspectRatio(
+      aspectRatio: controller.value.aspectRatio,
+      child: QRReaderPreview(controller),
+    );
   }
 
   @override
@@ -284,71 +297,84 @@ class _MainController2State extends State<MainController2> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 0, right: 30),
-                        child: Container(
-                            width: screenWidth * 0.85,
-                            height: 200,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                                //color: Colors.white,
-                                image: new DecorationImage(
-                                    image: AssetImage("image/image1.png"),
-                                    fit: BoxFit.cover)),
-//                        child: AspectRatio(
-//                          aspectRatio: controller.value.aspectRatio,
-//                          child: new QRReaderPreview(controller),
-//
-//                        ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                children: <Widget>[
-                                  Row(
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              width: screenWidth * 0.85,
+                              child: AspectRatio(
+                                aspectRatio: controller.value.aspectRatio,
+                                child: new QRReaderPreview(controller),
+                              ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                                  border: Border.all(color: Colors.white, width: 5)
+                              ),
+                            ),
+                            Positioned(
+                              top: 0,
+                              left: 0,
+                              width: screenWidth * 0.85,
+                              height: screenHeight * 0.65,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                                  border: Border.all(color: Colors.white, width: 5)
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
                                     children: <Widget>[
-                                      Column(
+                                      Row(
                                         children: <Widget>[
-                                          Icon(
-                                            Icons.arrow_back,
-                                            color: Color(0xFFC5C5C5),
-                                          ),
-                                          Text(
-                                            "RECEIVE",
-                                            style: TextStyle(
+                                          Column(
+                                            children: <Widget>[
+                                              Icon(
+                                                Icons.arrow_back,
                                                 color: Color(0xFFC5C5C5),
-                                                fontWeight: FontWeight.w500),
+                                              ),
+                                              Text(
+                                                "RECEIVE",
+                                                style: TextStyle(
+                                                    color: Color(0xFFC5C5C5),
+                                                    fontWeight: FontWeight
+                                                        .w500),
+                                              )
+                                            ],
+                                          ),
+                                          GestureDetector(
+                                            child: Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.info,
+                                                  color: Colors.white,
+                                                ),
+                                                Text("Input",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                        FontWeight.w500))
+                                              ],
+                                            ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SendingPage(crypto)));
+                                            },
                                           )
                                         ],
-                                      ),
-                                      GestureDetector(
-                                        child: Column(
-                                          children: <Widget>[
-                                            Icon(
-                                              Icons.info,
-                                              color: Colors.white,
-                                            ),
-                                            Text("Input",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.w500))
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SendingPage(crypto)));
-                                        },
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
                                       )
                                     ],
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                  )
-                                ],
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                  ),
+                                )
                               ),
-                            )),
+                            )
+                          ],
+                        ),
                       ),
                     ],
                     scrollDirection: Axis.horizontal,

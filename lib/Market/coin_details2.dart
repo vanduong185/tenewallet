@@ -318,7 +318,7 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                                     padding: const EdgeInsets.only(bottom: 5),
                                     child: Text("Highest Price 24h", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
                                   ),
-                                  Text(btc_data["MKTCAP"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
+                                  Text(btc_data["HIGH24HOUR"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
                                 ],
                                 crossAxisAlignment: CrossAxisAlignment.start,
                               ),

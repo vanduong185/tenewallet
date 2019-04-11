@@ -1,34 +1,63 @@
 {
   "project_info": {
-    "project_number": "632724328682",
-    "firebase_url": "https://wallet-91751.firebaseio.com",
-    "project_id": "wallet-91751",
-    "storage_bucket": "wallet-91751.appspot.com"
+    "project_number": "655449755555",
+    "firebase_url": "https://cryptoserver-97e9a.firebaseio.com",
+    "project_id": "cryptoserver-97e9a",
+    "storage_bucket": "cryptoserver-97e9a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:632724328682:android:ed34687386a9e5ef",
+        "mobilesdk_app_id": "1:655449755555:android:ed34687386a9e5ef",
         "android_client_info": {
           "package_name": "com.example.tenewallet"
         }
       },
       "oauth_client": [
         {
-          "client_id": "632724328682-29o4sj4m8o4f3pvr4414b42qk9rm6glc.apps.googleusercontent.com",
+          "client_id": "655449755555-tt2qsf6meor0eordckhelu4a810a5tdv.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCfBWV4nEtyoi1AsqvMr2YYGl80yhDn0WM"
+          "current_key": "AIzaSyD81vdwckzRYi_J_1XRvDSdo71bnOWO8sU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "632724328682-29o4sj4m8o4f3pvr4414b42qk9rm6glc.apps.googleusercontent.com",
+              "client_id": "655449755555-tt2qsf6meor0eordckhelu4a810a5tdv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655449755555:android:8ff4e46d9428ba66",
+        "android_client_info": {
+          "package_name": "io.teneocto.cryptomarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "655449755555-tt2qsf6meor0eordckhelu4a810a5tdv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD81vdwckzRYi_J_1XRvDSdo71bnOWO8sU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "655449755555-tt2qsf6meor0eordckhelu4a810a5tdv.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

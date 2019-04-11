@@ -3,13 +3,14 @@ import "package:charts_flutter/flutter.dart" as charts;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import "package:tenewallet/components/background.dart";
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 
 class CoinDetailsPage extends StatefulWidget {
   var _coin;
+  QRReaderController QRCodeController;
 
-  CoinDetailsPage(var coin) {
-    this._coin = coin;
-  }
+  CoinDetailsPage(this._coin, this.QRCodeController);
 
   @override
   _CoinDetailsPageState createState() => _CoinDetailsPageState(_coin);
@@ -17,20 +18,25 @@ class CoinDetailsPage extends StatefulWidget {
 
 class _CoinDetailsPageState extends State<CoinDetailsPage> {
   var coin;
-  String url =
-      "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=100";
+//  //String url =
+//      "https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=USD&limit=24";
 
-  String btcUrl = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD";
+//  String url24h = "https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=USD&limit=24";
+//  String urlLW = "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=7";
+//  String urlLM = "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=30";
+//  String urlLY = "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=365";
+//  String urlAll = "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=2000";
+
+  //String btcUrl = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD";
 
   var data1;
   var btc_data = {
-    "PRICE": 0.0,
-    "MKTCAP": 0.0,
-    "HIGH24HOUR": 0.0,
-    "LOW24HOUR": 0.0,
-    "RANK": "1",
-    "24TRADEVOL": "0",
-    "SUPPLY": 0
+    "priceUSD": 0.0,
+    "marketCapUSD": 0.0,
+    "priceChange24H": 0.0,
+    "priceChange1H": 0.0,
+    "rank": "1",
+    "priceChange7D": "0",
   };
 
   List<TimeSeriesPrice> high_price_data = [];
@@ -39,11 +45,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
   List<charts.Series<TimeSeriesPrice, DateTime>> seriesList;
 
   var options = [
-    {"title": "24h", "type": "24h"},
-    {"title": "Last week", "type": "lw"},
-    {"title": "Last month", "type": "lm"},
-    {"title": "Last year", "type": "ly"},
-    {"title": "All", "type": "all"},
+    {"title": "24h", "type": "24h", "url": "https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=USD&limit=24"},
+    {"title": "Last week", "type": "lw", "url": "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=7"},
+    {"title": "Last month", "type": "lm", "url": "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=30"},
+    {"title": "Last year", "type": "ly", "url": "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=365"},
+    {"title": "All", "type": "all" , "url": "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=2000"},
   ];
 
   var selectedOption;
@@ -52,13 +58,14 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
     this.coin = coin;
   }
 
-  Future<String> getData() async {
+  Future<String> getHistoryData(String url) async {
     var response = await http.get(url);
-    var response2 = await http.get(btcUrl);
 
     setState(() {
+      high_price_data = [];
+      low_price_data = [];
+
       var tmp = jsonDecode(response.body);
-      var tmp2 = jsonDecode(response2.body);
 
       data1 = tmp["Data"];
 
@@ -67,11 +74,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
             new DateTime.fromMillisecondsSinceEpoch(data1[i]["time"] * 1000);
 
         var high_price = new TimeSeriesPrice(
-            new DateTime(time.year, time.month, time.day), data1[i]["high"]);
+            new DateTime(time.year, time.month, time.day, time.hour), data1[i]["high"]);
         high_price_data.add(high_price);
 
         var low_price = new TimeSeriesPrice(
-            new DateTime(time.year, time.month, time.day), data1[i]["low"]);
+            new DateTime(time.year, time.month, time.day, time.hour), data1[i]["low"]);
         low_price_data.add(low_price);
       }
 
@@ -90,13 +97,16 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
             data: low_price_data),
       ];
 
-      tmp2 = tmp2["RAW"]["BTC"]["USD"];
-      btc_data["PRICE"] = tmp2["PRICE"];
-      btc_data["MKTCAP"] = tmp2["MKTCAP"];
-      btc_data["HIGH24HOUR"] = tmp2["HIGH24HOUR"];
-      btc_data["LOW24HOUR"] = tmp2["LOW24HOUR"];
-      btc_data["SUPPLY"] = tmp2["SUPPLY"];
+
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    widget.QRCodeController.startScanning();
   }
 
   @override
@@ -104,7 +114,9 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
     // TODO: implement initState
     super.initState();
 
-    selectedOption = options.last;
+    widget.QRCodeController.stopScanning();
+
+    selectedOption = options.first;
 
     setState(() {
       seriesList = [
@@ -117,7 +129,15 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
       ];
     });
 
-    this.getData();
+    this.getHistoryData(selectedOption["url"]);
+
+    Firestore.instance.collection("coinlist").snapshots().listen((data) {
+      var d = data.documents[0].data;
+
+      setState(() {
+        btc_data = data.documents[0].data;
+      });
+    });
   }
 
   @override
@@ -240,29 +260,40 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child: Row(
                   children: options.map((option) {
-                    return (Container(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 3),
-                        child: Text(
-                          option["title"],
-                          style: TextStyle(
+                    return (
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedOption = option;
+                            getHistoryData(selectedOption["url"]);
+                          });
+                        },
+                        child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 3),
+                            child: Text(
+                              option["title"],
+                              style: TextStyle(
+                                  color: option["type"] == selectedOption["type"]
+                                      ? Color(0xFF1980BA)
+                                      : Colors.white,
+                                  fontSize: 12),
+                            ),
+                          ),
+                          decoration: BoxDecoration(
                               color: option["type"] == selectedOption["type"]
-                                  ? Color(0xFF1980BA)
-                                  : Colors.white,
-                              fontSize: 12),
+                                  ? Colors.white
+                                  : Colors.transparent,
+                              border: Border.all(
+                                  color: Colors.white,
+                                  width: 1,
+                                  style: BorderStyle.solid),
+                              borderRadius: BorderRadius.all(Radius.circular(2))
+                          ),
                         ),
-                      ),
-                      decoration: BoxDecoration(
-                          color: option["type"] == selectedOption["type"]
-                              ? Colors.white
-                              : Colors.transparent,
-                          border: Border.all(
-                              color: Colors.white,
-                              width: 1,
-                              style: BorderStyle.solid),
-                          borderRadius: BorderRadius.all(Radius.circular(2))),
-                    ));
+                      )
+                    );
                   }).toList(),
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
@@ -302,7 +333,7 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                                     padding: const EdgeInsets.only(bottom: 5),
                                     child: Text("Market Value", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
                                   ),
-                                  Text(btc_data["MKTCAP"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
+                                  Text(btc_data["marketCapUSD"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
                                 ],
                                 crossAxisAlignment: CrossAxisAlignment.start,
                               ),
@@ -316,9 +347,9 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 5),
-                                    child: Text("Highest Price 24h", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
+                                    child: Text("Price Change 1H", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
                                   ),
-                                  Text(btc_data["HIGH24HOUR"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
+                                  Text(btc_data["priceChange1H"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
                                 ],
                                 crossAxisAlignment: CrossAxisAlignment.start,
                               ),
@@ -332,9 +363,9 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 5),
-                                    child: Text("24h Trading Volume", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
+                                    child: Text("Price Change 24H", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
                                   ),
-                                  Text(btc_data["24TRADEVOL"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
+                                  Text(btc_data["priceChange24H"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
                                 ],
                                 crossAxisAlignment: CrossAxisAlignment.start,
                               ),
@@ -355,7 +386,7 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                                     padding: const EdgeInsets.only(bottom: 5),
                                     child: Text("Ranking of Market Value", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
                                   ),
-                                  Text(btc_data["RANK"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
+                                  Text(btc_data["rank"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
                                 ],
                                 crossAxisAlignment: CrossAxisAlignment.start,
                               ),
@@ -369,9 +400,9 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 5),
-                                    child: Text("Lowest Price 24h", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
+                                    child: Text("Price Change 7 Days", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
                                   ),
-                                  Text(btc_data["LOW24HOUR"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
+                                  Text(btc_data["priceChange7D"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
                                 ],
                                 crossAxisAlignment: CrossAxisAlignment.start,
                               ),
@@ -385,9 +416,9 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 5),
-                                    child: Text("Total Supply", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
+                                    child: Text("Price USD", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
                                   ),
-                                  Text(btc_data["SUPPLY"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
+                                  Text(btc_data["priceUSD"].toString(), style: TextStyle(color: Colors.white, fontSize: 12))
                                 ],
                                 crossAxisAlignment: CrossAxisAlignment.start,
                               ),

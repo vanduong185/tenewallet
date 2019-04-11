@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tenewallet/Wallet/confirm_sending.dart';
 import "package:qrcode_reader/qrcode_reader.dart";
+import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 
 class  SendingPage extends StatefulWidget {
   var _crypto;
-  //var QRCodeController;
+  QRReaderController QRCodeController;
 
-  SendingPage(this._crypto);
+  SendingPage(this._crypto, this.QRCodeController);
 
   @override
   _SendingPageState createState() {
@@ -37,9 +38,18 @@ class _SendingPageState extends State<SendingPage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    widget.QRCodeController.startScanning();
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    widget.QRCodeController?.stopScanning();
 
     if (this.crypto["recipent_address"] != null) {
       eCtrl1.text = this.crypto["recipent_address"];

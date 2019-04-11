@@ -33,23 +33,22 @@ class _MainController2State extends State<MainController2> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     controller = new QRReaderController(
-        widget.cameras[0], ResolutionPreset.medium, [CodeFormat.qr],
-        (dynamic value) {
-      print(value); // the result!
-      // ... do something
-      // wait 3 seconds then start scanning again.
-      //new Future.delayed(const Duration(seconds: 1), controller.startScanning);
-      setState(() {
-        crypto["recipent_address"] = value;
-        controller.dispose();
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SendingPage(crypto)));
-      });
-    });
+      widget.cameras[0],
+      ResolutionPreset.medium,
+      [CodeFormat.qr],
+      (dynamic value) {
+        setState(() {
+          crypto["recipent_address"] = value;
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SendingPage(crypto, controller))
+          );
+        });
+      }
+    );
 
     controller.initialize().then((_) {
       if (!mounted) {
@@ -80,6 +79,13 @@ class _MainController2State extends State<MainController2> {
       aspectRatio: controller.value.aspectRatio,
       child: QRReaderPreview(controller),
     );
+  }
+
+  @override
+  void deactivate() {
+    // TODO: implement deactivate
+    super.deactivate();
+    print(context);
   }
 
   @override
@@ -148,7 +154,7 @@ class _MainController2State extends State<MainController2> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        CoinDetailsPage(coin)));
+                                        CoinDetailsPage(coin, controller)));
                           },
                           child: Column(
                             children: <Widget>[
@@ -360,7 +366,7 @@ class _MainController2State extends State<MainController2> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          SendingPage(crypto)));
+                                                          SendingPage(crypto, controller)));
                                             },
                                           )
                                         ],

@@ -141,10 +141,10 @@ class _TransactionPageState extends State<TransactionPage> {
                     elevation: 3,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
                     onPressed: () {
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SendingPage(crypto))
-                    );
+//                      Navigator.push(
+//                      context,
+//                      MaterialPageRoute(builder: (context) => SendingPage(crypto))
+//                      );
                     },
                   ),
                   RaisedButton(

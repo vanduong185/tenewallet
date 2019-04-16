@@ -6,14 +6,10 @@ class Background extends StatefulWidget {
   Background({Key key, this.child}) : super(key: key) ;
 
   @override
-  _BackgroundState createState() => _BackgroundState(child);
+  _BackgroundState createState() => _BackgroundState();
 }
 
 class _BackgroundState extends State<Background> {
-  Widget child;
-
-  _BackgroundState(this.child);
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -31,7 +27,7 @@ class _BackgroundState extends State<Background> {
                 tileMode: TileMode.repeated
             )
         ),
-        child: child
+        child: widget.child
     );
   }
 }

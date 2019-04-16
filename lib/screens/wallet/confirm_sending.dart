@@ -45,7 +45,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
           child: Container(
             height: 1,
             color: Color(0xFF1980BA),
-          ),
+          ), preferredSize: null,
         ),
       ),
       body: SingleChildScrollView(

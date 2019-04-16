@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tenewallet/Wallet/confirm_sending.dart';
 import "package:qrcode_reader/qrcode_reader.dart";
-import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:tenewallet/screens/wallet/confirm_sending.dart';
 
 class  SendingPage extends StatefulWidget {
   var _crypto;
-  QRReaderController QRCodeController;
 
-  SendingPage(this._crypto, this.QRCodeController);
+  SendingPage(this._crypto);
 
   @override
   _SendingPageState createState() {
@@ -39,17 +39,12 @@ class _SendingPageState extends State<SendingPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-    widget.QRCodeController.startScanning();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
-    widget.QRCodeController?.stopScanning();
 
     if (this.crypto["recipent_address"] != null) {
       eCtrl1.text = this.crypto["recipent_address"];
@@ -59,7 +54,6 @@ class _SendingPageState extends State<SendingPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -73,7 +67,7 @@ class _SendingPageState extends State<SendingPage> {
           child: Container(
             height: 1,
             color: Color(0xFF1980BA),
-          ),
+          ), preferredSize: null,
         ),
         actions: <Widget>[
           Padding(
@@ -131,7 +125,7 @@ class _SendingPageState extends State<SendingPage> {
                       },
                       decoration: InputDecoration(
                         suffixIcon: GestureDetector(
-                          child: Icon(Icons.apps, color: Colors.black54,),
+                          child: Icon(FontAwesomeIcons.qrcode, color: Colors.black54,),
                           onTap: () {
                             //this.openQrReader();
                           },
@@ -178,6 +172,7 @@ class _SendingPageState extends State<SendingPage> {
                           onTap: () {
                             setState(() {
                               eCtrl2.text = crypto["amount"];
+                              sent_crypto_amount = crypto["amount"];
                             });
                           },
                         )

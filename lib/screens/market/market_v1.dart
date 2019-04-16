@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tenewallet/Market/coin_details.dart';
+import 'package:tenewallet/screens/market/market.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 
 class MarketPage extends StatefulWidget {
@@ -58,10 +58,10 @@ class _MarketPageState extends State<MarketPage> {
                   ),
                 ),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CoinDetailsPage(market[i]))
-                  );
+//                  Navigator.push(
+//                    context,
+//                    MaterialPageRoute(builder: (context) => CoinDetailsPage(market[i]))
+//                  );
                 },
               )
             ),

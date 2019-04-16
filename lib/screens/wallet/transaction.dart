@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tenewallet/Wallet/sending.dart';
+import 'package:tenewallet/screens/wallet/sending.dart';
 
 class TransactionPage1 extends StatelessWidget {
   final crypto;

@@ -103,12 +103,12 @@ class _ScanQRCodeState extends State<ScanQRCode> {
                             ],
                           ),
                           onTap: () {
-                            widget.QRCodeController.stopScanning();
+                            widget.QRCodeController?.stopScanning();
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => SendingPage(widget.crypto))
                             ).then((_){
-                              widget.QRCodeController.startScanning();
+                              widget.QRCodeController?.startScanning();
                             });
                           },
                         )

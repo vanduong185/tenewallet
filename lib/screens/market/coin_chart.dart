@@ -48,6 +48,8 @@ class _CoinChartState extends State<CoinChart> {
 
       data = tmp["Data"];
 
+      //print(data);
+
       for (var i = 0; i < data.length; i++) {
         var time = new DateTime.fromMillisecondsSinceEpoch(data[i]["time"] * 1000);
 

@@ -65,12 +65,12 @@ class _ShowQRCodeState extends State<ShowQRCode> {
                 child: GestureDetector(
                   child: Container(
                     child: new QrImage(
-                      data: "duongdzvcl",
+                      data: "myaddress",
                       size: 200,
                     ),
                   ),
                   onTap: () {
-                    Clipboard.setData( new ClipboardData(text: "duongdzvcl"));
+                    Clipboard.setData( new ClipboardData(text: "myaddress"));
                     Fluttertoast.showToast(
                       msg: "Code is coppied to clipboard",
                       toastLength: Toast.LENGTH_SHORT,

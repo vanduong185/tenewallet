@@ -9,7 +9,9 @@ Future<Null> main() async{
     statusBarColor: Color(0xFF1980BA) // set status bar color
   ));
 
-  runApp(App());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
+    runApp(App());
+  });
 }
 
 class App extends StatefulWidget {
@@ -26,10 +28,6 @@ class _AppState extends State<App> {
         primarySwatch: Colors.blue,
       ),
       home: Splash(),
-//      home: Container(
-//        height: 300,
-//        child: SelectionCallbackExample.withSampleData(),
-//      ),
       debugShowCheckedModeBanner: false,
     );
   }

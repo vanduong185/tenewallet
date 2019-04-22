@@ -114,7 +114,7 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.only(bottom: 30),
                 child: Container(
                   width: screenWidth,
-                  height: 400,
+                  height: screenHeight*0.6,
                   child: ListView(
                     children: <Widget>[
                       ShowQRCode(scrollController),

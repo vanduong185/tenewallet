@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
+
 class ConfirmSendingPage extends StatefulWidget {
   var _transaction;
 
@@ -75,7 +77,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: Icon(
-                            Icons.attach_money,
+                            TeneIcon.crypto_card___currency,
                             size: 30,
                             color: Colors.white,
                           ),
@@ -114,7 +116,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                         )
                       ],
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                     )
                   ],
                   mainAxisAlignment: MainAxisAlignment.center,

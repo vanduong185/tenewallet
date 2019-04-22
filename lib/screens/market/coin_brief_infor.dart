@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class CoinBriefInfor extends StatelessWidget {
   @override
@@ -18,7 +19,7 @@ class CoinBriefInfor extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Icon(
-                  Icons.attach_money,
+                  TeneIcon.crypto_card___currency,
                   size: 30,
                   color: Colors.white,
                 ),

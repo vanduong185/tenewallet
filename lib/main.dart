@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
-import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 
 import "package:tenewallet/widgets/splash.dart";
 
@@ -27,6 +26,10 @@ class _AppState extends State<App> {
         primarySwatch: Colors.blue,
       ),
       home: Splash(),
+//      home: Container(
+//        height: 300,
+//        child: SelectionCallbackExample.withSampleData(),
+//      ),
       debugShowCheckedModeBanner: false,
     );
   }

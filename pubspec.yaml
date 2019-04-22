@@ -84,3 +84,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+  fonts:
+    - family: teneicon
+      fonts:
+      - asset: lib/assets/fonts/TeneIcon.ttf

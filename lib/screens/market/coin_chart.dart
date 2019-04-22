@@ -1,18 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-import 'package:tenewallet/models/coin.dart';
-
 class CoinChart extends StatefulWidget {
-  Coin coin;
-
-  CoinChart(this.coin);
-
   @override
-  _CoinChartState createState() => _CoinChartState();
+  State<StatefulWidget> createState() => new _CoinChartState();
 }
 
 class _CoinChartState extends State<CoinChart> {
@@ -25,49 +19,32 @@ class _CoinChartState extends State<CoinChart> {
   ];
 
   var selectedOption;
-  TimeSeriesPrice selectedTimeSeriesPrice;
 
-  List<TimeSeriesPrice> high_price_data = [];
-  List<TimeSeriesPrice> low_price_data = [];
+  TimeSeriesPrice selectedPoint;
+
   List<TimeSeriesPrice> price_data = [];
-
-  List<charts.Series<TimeSeriesPrice, DateTime>> seriesList;
-
-  var data;
   bool isLoading;
 
   Future<String> getHistoryData(String url) async {
     setState(() {
+      selectedPoint = null;
       isLoading = true;
     });
 
     var response = await http.get(url);
 
     setState(() {
-//      high_price_data = [];
-//      low_price_data = [];
       price_data = [];
 
       var tmp = jsonDecode(response.body);
 
-      data = tmp["Data"];
-
-      //print(data);
-      var current_price = data.last;
-      selectedTimeSeriesPrice = new TimeSeriesPrice(
-        new DateTime.fromMillisecondsSinceEpoch(current_price["time"] * 1000),
-        current_price["high"],
-        current_price["low"]
-      );
+      var data = tmp["Data"];
 
       for (var i = 0; i < data.length; i++) {
         var time = new DateTime.fromMillisecondsSinceEpoch(data[i]["time"] * 1000);
 
         var price = new TimeSeriesPrice(new DateTime(time.year, time.month, time.day, time.hour), data[i]["high"], data[i]["low"]);
         price_data.add(price);
-
-//        var low_price = new TimeSeriesPrice(new DateTime(time.year, time.month, time.day, time.hour), data[i]["low"]);
-//        low_price_data.add(low_price);
       }
 
       seriesList = [
@@ -91,39 +68,67 @@ class _CoinChartState extends State<CoinChart> {
     });
   }
 
-  bool compareDateTime(DateTime time, DateTime otherTime) {
-    return time.millisecondsSinceEpoch == otherTime.millisecondsSinceEpoch;
+  List<charts.Series<TimeSeriesPrice, DateTime>> seriesList;
+
+  final simpleCurrencyFormatter = charts.BasicNumericTickFormatterSpec.fromNumberFormat(
+    new NumberFormat.currency(symbol: "\$", decimalDigits: 0)
+  );
+
+  showSelectedPoint(model) {
+    var selectedDatum = model.selectedDatum;
+    if (selectedDatum.isNotEmpty) {
+      var datum = selectedDatum.first.datum;
+      setState(() {
+        selectedPoint = new TimeSeriesPrice(datum.time, datum.high_price, datum.low_price);
+      });
+    }
   }
 
-  onChartSelectionChange(charts.SelectionModel model) {
-    final selectedDatum = model.selectedDatum;
-
-    DateTime time;
-    num highPrice;
-    num lowPrice;
-
-    if (selectedDatum.isNotEmpty) {
-      time = selectedDatum.first.datum.time;
-      highPrice = selectedDatum.first.datum.high_price;
-      lowPrice = selectedDatum.first.datum.low_price;
-      setState(() {
-        //selectedTimeSeriesPrice = new TimeSeriesPrice(time, highPrice, lowPrice);
-      });
+  Widget renderSelectedPoint() {
+    if (selectedPoint != null) {
+      return Row(
+        children: <Widget>[
+          Text( selectedOption["type"] == "24h" ?
+            new DateFormat.jm().format(selectedPoint.time)  :
+            new DateFormat.yMd().format(selectedPoint.time)
+          ),
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: Text("●", style: TextStyle(color: Colors.green),),
+              ),
+              Text("\$" + selectedPoint.high_price.toString())
+            ]
+          ),
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: Text("●", style: TextStyle(color: Colors.red),),
+              ),
+              Text("\$" + selectedPoint.low_price.toString())
+            ]
+          )
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      );
+    }
+    else {
+      return Container();
     }
   }
 
   @override
   void initState() {
     super.initState();
-    isLoading = true;
-    selectedOption = options.first;
-    this.getHistoryData(selectedOption["url"]);
+
+    selectedOption = options[0];
+    getHistoryData(selectedOption["url"]);
   }
 
   @override
   Widget build(BuildContext context) {
-    final simpleCurrencyFormatter  = charts.BasicNumericTickFormatterSpec.fromNumberFormat(new NumberFormat.currency(symbol: "\$", decimalDigits: 0));
-
     return Column(
       children: <Widget>[
         Padding(
@@ -131,30 +136,30 @@ class _CoinChartState extends State<CoinChart> {
           child: Row(
             children: options.map((option) {
               return (
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedOption = option;
-                        getHistoryData(selectedOption["url"]);
-                      });
-                    },
-                    child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                        child: Text(
-                          option["title"],
-                          style: TextStyle(
-                              color: option["type"] == selectedOption["type"] ? Color(0xFF1980BA) : Colors.white, fontSize: 12
-                          ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedOption = option;
+                      getHistoryData(selectedOption["url"]);
+                    });
+                  },
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                      child: Text(
+                        option["title"],
+                        style: TextStyle(
+                          color: option["type"] == selectedOption["type"] ? Color(0xFF1980BA) : Colors.white, fontSize: 12
                         ),
                       ),
-                      decoration: BoxDecoration(
-                          color: option["type"] == selectedOption["type"] ? Colors.white : Colors.transparent,
-                          border: Border.all(color: Colors.white, width: 1, style: BorderStyle.solid),
-                          borderRadius: BorderRadius.all(Radius.circular(2))
-                      ),
                     ),
-                  )
+                    decoration: BoxDecoration(
+                      color: option["type"] == selectedOption["type"] ? Colors.white : Colors.transparent,
+                      border: Border.all(color: Colors.white, width: 1, style: BorderStyle.solid),
+                      borderRadius: BorderRadius.all(Radius.circular(2))
+                    ),
+                  ),
+                )
               );
             }).toList(),
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -165,72 +170,44 @@ class _CoinChartState extends State<CoinChart> {
           child: Container(
             height: 300,
             decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(10))
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(10))
             ),
             child: Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+              padding: const EdgeInsets.all(10),
               child: isLoading
                 ? Center(child: CircularProgressIndicator(
                   valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFA9DFF1))
                 ))
                 : Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Row(
-                      children: <Widget>[
-                        Text(selectedTimeSeriesPrice.time.toIso8601String()),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              height: 10,
-                              width: 10,
-                              color: Colors.green,
-                            ),
-                            Text(selectedTimeSeriesPrice.high_price.toString())
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              height: 10,
-                              width: 10,
-                              color: Colors.red,
-                            ),
-                            Text(selectedTimeSeriesPrice.low_price.toString())
-                          ],
-                        )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: renderSelectedPoint()
                     ),
-                  ),
-                  Container(
-                    height: 250,
-                    child: new charts.TimeSeriesChart(
-                      seriesList,
-                      animate: false,
-                      dateTimeFactory: const charts.LocalDateTimeFactory(),
-                      //animationDuration: Duration(milliseconds: 500),
-                      primaryMeasureAxis: new charts.NumericAxisSpec(
+                    Container(
+                      height: 250,
+                      child: new charts.TimeSeriesChart(
+                        seriesList,
+                        animate: true,
+                        dateTimeFactory: const charts.LocalDateTimeFactory(),
+                        animationDuration: Duration(milliseconds: 500),
+                        primaryMeasureAxis: new charts.NumericAxisSpec(
                           tickFormatterSpec: simpleCurrencyFormatter,
                           tickProviderSpec: new charts.BasicNumericTickProviderSpec(zeroBound: false)
-                      ),
-                      selectionModels: [new charts.SelectionModelConfig(
-                        type: charts.SelectionModelType.info,
-                        changedListener: onChartSelectionChange
-                      )],
-                      behaviors: [
-                        new charts.LinePointHighlighter(
-                            showVerticalFollowLine: charts.LinePointHighlighterFollowLineType.nearest
                         ),
-                        new charts.SelectNearest(eventTrigger: charts.SelectionTrigger.tapAndDrag),
-                      ],
+                        selectionModels: [new charts.SelectionModelConfig(
+                          type: charts.SelectionModelType.info,
+                          changedListener: showSelectedPoint
+                        )],
+                        behaviors: [
+                          new charts.SelectNearest(eventTrigger: charts.SelectionTrigger.tapAndDrag, ),
+                        ],
+                      )
                     ),
-                  )
-                ],
-              )
-            ),
+                  ],
+                ),
+            )
           ),
         )
       ],

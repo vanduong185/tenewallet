@@ -29,112 +29,126 @@ class _ShowQRCodeState extends State<ShowQRCode> {
             color: Colors.white),
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
+          child: Stack(
             children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFFDEF2F9),
-                  borderRadius: BorderRadius.all(Radius.circular(10))
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Center(
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          "Let's share this QR Code",
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            color: Color(0xFF333333),
-                          ),
-                        ),
-                        Text(
-                          "(Tap QR symbol to copy your address)",
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            color: Color(0xFF333333),
-                            fontWeight: FontWeight.w300
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 30),
-                child: GestureDetector(
-                  child: Container(
-                    child: new QrImage(
-                      data: "myaddress",
-                      size: 200,
-                    ),
-                  ),
-                  onTap: () {
-                    Clipboard.setData( new ClipboardData(text: "myaddress"));
-                    Fluttertoast.showToast(
-                      msg: "Code is coppied to clipboard",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIos: 1,
-                      backgroundColor: Color(0xFF4AB7E0),
-                      textColor: Color(0xFFFFFFFF),
-                      fontSize: 14,
-                    );
-                  },
-                )
-              ),
-              Row(
+              Column(
                 children: <Widget>[
-                  GestureDetector(
-                    child: Column(
-                      children: <Widget>[
-                        Icon(
-                          FontAwesomeIcons.longArrowAltRight,
-                          color: Color(0xFFC5C5C5),
-                        ),
-                        Text(
-                          "SEND",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFFC5C5C5)
-                          ),
-                        )
-                      ],
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Color(0xFFDEF2F9),
+                        borderRadius: BorderRadius.all(Radius.circular(10))
                     ),
-                    onTap: () {
-                      widget.scrollController.animateTo(
-                        widget.scrollController.offset + screenWidth,
-                        curve: Curves.linear,
-                        duration: Duration(milliseconds: 200)
-                      );
-                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child: Center(
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              "Let's share this QR Code",
+                              style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: Color(0xFF333333),
+                              ),
+                            ),
+                            Text(
+                              "(Tap QR symbol to copy your address)",
+                              style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: Color(0xFF333333),
+                                  fontWeight: FontWeight.w300
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  GestureDetector(
-                    child: Column(
-                      children: <Widget>[
-                        Icon(
-                          Icons.share,
-                          color: Color(0xFF1980BA),
-                        ),
-                        Text(
-                          "Share",
-                          style: TextStyle(
-                              color: Color(0xFF1980BA)
+                  Padding(
+                      padding: const EdgeInsets.only(bottom: 30),
+                      child: GestureDetector(
+                        child: Container(
+                          child: new QrImage(
+                            data: "myaddress",
+                            size: screenWidth*0.6,
                           ),
-                        )
-                      ],
-                    ),
-                    onTap: () {
-                      Share.share('This my address wallet');
-                    },
+                        ),
+                        onTap: () {
+                          Clipboard.setData( new ClipboardData(text: "myaddress"));
+                          Fluttertoast.showToast(
+                            msg: "Code is coppied to clipboard",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIos: 1,
+                            backgroundColor: Color(0xFF4AB7E0),
+                            textColor: Color(0xFFFFFFFF),
+                            fontSize: 14,
+                          );
+                        },
+                      )
+                  ),
+                  Row(
+                    children: <Widget>[
+                      GestureDetector(
+                        child: Column(
+                          children: <Widget>[
+                            Icon(
+                              FontAwesomeIcons.longArrowAltRight,
+                              color: Color(0xFFC5C5C5),
+                            ),
+                            Text(
+                              "SEND",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFFC5C5C5)
+                              ),
+                            )
+                          ],
+                        ),
+                        onTap: () {
+                          widget.scrollController.animateTo(
+                              widget.scrollController.offset + screenWidth,
+                              curve: Curves.linear,
+                              duration: Duration(milliseconds: 200)
+                          );
+                        },
+                      ),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
                   )
                 ],
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: GestureDetector(
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Icon(
+                          FontAwesomeIcons.shareAltSquare,
+                          color: Color(0xFF1980BA),
+                          size: 18,
+                        ),
+                      ),
+                      Text(
+                        "Share",
+                        style: TextStyle(
+                          color: Color(0xFF1980BA),
+                          fontWeight: FontWeight.w500
+                        ),
+                      )
+                    ],
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                  ),
+                  onTap: () {
+                    Share.share('This my address wallet');
+                  },
+                )
               )
             ],
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          ),
+          )
         ),
       ),
     );

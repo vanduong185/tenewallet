@@ -69,7 +69,7 @@ class _MarketState extends State<Market> {
                   children: <Widget>[
                     Padding(
                         padding:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                         child: CoinBriefInfor()),
                     CoinChart(),
                     Padding(
@@ -118,30 +118,3 @@ class _MarketState extends State<Market> {
     );
   }
 }
-
-final _appBar = AppBar(
-  title: Text(
-    "Bitcoin market",
-    style: TextStyle(color: Color(0xFFA9DFF1)),
-  ),
-  centerTitle: true,
-  iconTheme: IconThemeData(color: Color(0xFFA9DFF1)),
-  actions: <Widget>[
-    Padding(
-      padding: const EdgeInsets.only(right: 15),
-      child: Icon(
-        TeneIcon.about,
-        color: Color(0xFFA9DFF1),
-      ),
-    )
-  ],
-  backgroundColor: Colors.transparent,
-  bottom: PreferredSize(
-    child: Container(
-      height: 1,
-      color: Color(0xFFA9DFF1),
-    ),
-    preferredSize: null,
-  ),
-  elevation: 0,
-);

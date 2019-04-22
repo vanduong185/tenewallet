@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:tenewallet/screens/market/market.dart';
 import 'package:tenewallet/services/network.dart';
@@ -53,7 +54,7 @@ class _CoinInforState extends State<CoinInfor> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: Container(
         height: 80,
         child: Row(
@@ -74,21 +75,7 @@ class _CoinInforState extends State<CoinInfor> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(right: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
-              color: Color(0xFFF5B300),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Icon(
-                TeneIcon.crypto_card___currency,
-                size: 30,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          child: Image.asset("image/bitcoin.png", height: 60),
         ),
         GestureDetector(
           onTap: () {

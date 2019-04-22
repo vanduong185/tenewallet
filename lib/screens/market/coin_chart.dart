@@ -183,7 +183,9 @@ class _CoinChartState extends State<CoinChart> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10),
-                      child: renderSelectedPoint()
+                      child: Container(
+                        child: renderSelectedPoint(),
+                      )
                     ),
                     Container(
                       height: 250,

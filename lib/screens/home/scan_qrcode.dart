@@ -58,8 +58,8 @@ class _ScanQRCodeState extends State<ScanQRCode> {
           Positioned(
             top: 0,
             left: 0,
-            width: screenWidth * 0.85,
-            height: screenHeight*0.6,
+            width: screenWidth*0.85,
+            height: screenHeight*0.7,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -67,57 +67,64 @@ class _ScanQRCodeState extends State<ScanQRCode> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(20),
-                child: Column(
+                child: Stack(
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        GestureDetector(
-                          child: Column(
-                            children: <Widget>[
-                              Icon(FontAwesomeIcons.longArrowAltLeft, color: Color(0xFFC5C5C5)),
-                              Text("RECEIVE",
-                                style: TextStyle(
-                                    color: Color(0xFFC5C5C5),
-                                    fontWeight: FontWeight.w500
-                                ),
-                              )
-                            ],
-                          ),
-                          onTap: () {
-                            widget.scrollController.animateTo(
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      child: GestureDetector(
+                        child: Column(
+                          children: <Widget>[
+                            Icon(FontAwesomeIcons.longArrowAltLeft, color: Color(0xFFC5C5C5)),
+                            Text("RECEIVE",
+                              style: TextStyle(
+                                  color: Color(0xFFC5C5C5),
+                                  fontWeight: FontWeight.w500
+                              ),
+                            )
+                          ],
+                        ),
+                        onTap: () {
+                          widget.scrollController.animateTo(
                               widget.scrollController.offset - screenWidth,
                               curve: Curves.linear,
                               duration: Duration(milliseconds: 200)
-                            );
-                          },
-                        ),
-                        GestureDetector(
-                          child: Column(
-                            children: <Widget>[
-                              Icon(Icons.info, color: Colors.white),
-                              Text("Input",
+                          );
+                        },
+                      )
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: Icon(FontAwesomeIcons.infoCircle, color: Colors.white, size: 18,),
+                            ),
+                            Text("Input",
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500
                                 )
-                              )
-                            ],
-                          ),
-                          onTap: () {
-                            widget.QRCodeController?.stopScanning();
-                            Navigator.push(
+                            )
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                        ),
+                        onTap: () {
+                          widget.QRCodeController?.stopScanning();
+                          Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => SendingPage(widget.crypto))
-                            ).then((_){
-                              widget.QRCodeController?.startScanning();
-                            });
-                          },
-                        )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          ).then((_){
+                            widget.QRCodeController?.startScanning();
+                          });
+                        },
+                      ),
                     )
                   ],
-                  mainAxisAlignment: MainAxisAlignment.end,
                 ),
               ),
             ),

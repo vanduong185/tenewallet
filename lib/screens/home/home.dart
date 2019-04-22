@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import "package:tenewallet/screens/wallet/sending.dart";
 import "package:tenewallet/screens/setting/setting.dart";
@@ -8,7 +9,6 @@ import 'package:tenewallet/screens/home/show_qrcode.dart';
 import 'package:tenewallet/screens/home/scan_qrcode.dart';
 
 import 'package:tenewallet/widgets/background.dart';
-import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -82,7 +82,10 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.only(right: 15),
               child: IconButton(
-                icon: Icon(TeneIcon.setting, color: Color(0xFFA9DFF1)),
+                icon: new SvgPicture.asset(
+                  "lib/assets/fonts/svg/setting.svg",
+                  color: Color(0xFFA9DFF1)
+                ),
                 tooltip: "Settings",
                 onPressed: () {
                   QRCodeController?.stopScanning();
@@ -114,7 +117,7 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.only(bottom: 30),
                 child: Container(
                   width: screenWidth,
-                  height: screenHeight*0.6,
+                  height: screenHeight*0.7,
                   child: ListView(
                     children: <Widget>[
                       ShowQRCode(scrollController),

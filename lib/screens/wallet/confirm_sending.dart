@@ -64,8 +64,6 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                          color: Color(0xFFF5B300),
                           boxShadow: [
                             BoxShadow(
                               color: Color(0xFFd9d9d9),
@@ -74,14 +72,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                             )
                           ]
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Icon(
-                            TeneIcon.crypto_card___currency,
-                            size: 30,
-                            color: Colors.white,
-                          ),
-                        ),
+                        child: Image.asset("image/bitcoin.png", height: 60),
                       ),
                     ),
                     Column(

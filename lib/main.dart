@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
-import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 
 import "package:tenewallet/widgets/splash.dart";
 
@@ -10,7 +9,9 @@ Future<Null> main() async{
     statusBarColor: Color(0xFF1980BA) // set status bar color
   ));
 
-  runApp(App());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
+    runApp(App());
+  });
 }
 
 class App extends StatefulWidget {

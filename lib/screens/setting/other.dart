@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
+
 class OtherSetting extends StatefulWidget {
   @override
   _OtherSettingState createState() => _OtherSettingState();
@@ -29,7 +31,7 @@ class _OtherSettingState extends State<OtherSetting> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
-                      child: Icon(FontAwesomeIcons.questionCircle, color: Color(0xFF4AB7E0), size: 24,),
+                      child: Icon(TeneIcon.support, color: Color(0xFF4AB7E0), size: 24,),
                     ),
                     Text("Get Support", style: TextStyle(color: Color(0xFF333333), fontSize: 14, fontWeight: FontWeight.w300),)
                   ],
@@ -53,7 +55,7 @@ class _OtherSettingState extends State<OtherSetting> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
-                      child: Icon(FontAwesomeIcons.fileAlt, color: Color(0xFF4AB7E0), size: 24,),
+                      child: Icon(TeneIcon.license, color: Color(0xFF4AB7E0), size: 24,),
                     ),
                     Text("Open Source License", style: TextStyle(color: Color(0xFF333333), fontSize: 14, fontWeight: FontWeight.w300),)
                   ],
@@ -77,7 +79,7 @@ class _OtherSettingState extends State<OtherSetting> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
-                      child: Icon(FontAwesomeIcons.infoCircle, color: Color(0xFF4AB7E0), size: 24,),
+                      child: Icon(TeneIcon.about, color: Color(0xFF4AB7E0), size: 24,),
                     ),
                     Text("About", style: TextStyle(color: Color(0xFF333333), fontSize: 14, fontWeight: FontWeight.w300),)
                   ],

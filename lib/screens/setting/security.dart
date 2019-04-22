@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import 'package:tenewallet/models/passcode.dart';
+import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class SecuritySetting extends StatefulWidget {
   @override
@@ -61,7 +62,7 @@ class _SecuritySettingState extends State<SecuritySetting> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(right: 5),
-                      child: Icon(Icons.lock_outline, color: Color(0xFF4AB7E0), size: 24,),
+                      child: Icon(TeneIcon.passcode, color: Color(0xFF4AB7E0), size: 24,),
                     ),
                     Text("Passcode", style: TextStyle(color: Color(0xFF333333), fontSize: 14, fontWeight: FontWeight.w300),)
                   ],

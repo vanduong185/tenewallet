@@ -41,6 +41,7 @@ class _ScanQRCodeState extends State<ScanQRCode> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Padding(
       padding: const EdgeInsets.only(left: 0, right: 30),
@@ -58,7 +59,7 @@ class _ScanQRCodeState extends State<ScanQRCode> {
             top: 0,
             left: 0,
             width: screenWidth * 0.85,
-            height: 400,
+            height: screenHeight*0.6,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(15)),

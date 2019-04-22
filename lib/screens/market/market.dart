@@ -4,8 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tenewallet/screens/market/coin_chart.dart';
 import 'package:tenewallet/screens/market/coin_details.dart';
 import 'package:tenewallet/screens/market/coin_brief_infor.dart';
+import 'package:tenewallet/screens/setting/setting.dart';
 import 'package:tenewallet/models/coin.dart';
 import "package:tenewallet/widgets/background.dart";
+import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class Market extends StatefulWidget {
   var _coin;
@@ -59,7 +61,7 @@ class _MarketState extends State<Market> {
     return Background(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: _appBar,
+        appBar: renderAppbar(),
         body: isLoading
             ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
@@ -69,7 +71,7 @@ class _MarketState extends State<Market> {
                         padding:
                             EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                         child: CoinBriefInfor()),
-                    CoinChart(coin),
+                    CoinChart(),
                     Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 10),
@@ -78,6 +80,41 @@ class _MarketState extends State<Market> {
                 ),
               ),
       ),
+    );
+  }
+
+  Widget renderAppbar() {
+    return AppBar(
+      title: Text(
+        "Bitcoin market",
+        style: TextStyle(color: Color(0xFFA9DFF1)),
+      ),
+      centerTitle: true,
+      iconTheme: IconThemeData(color: Color(0xFFA9DFF1)),
+      actions: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(right: 15),
+          child: IconButton(
+            icon: Icon(TeneIcon.setting, color: Color(0xFFA9DFF1)),
+            tooltip: "Settings",
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Setting())
+              );
+            },
+          ),
+        )
+      ],
+      backgroundColor: Colors.transparent,
+      bottom: PreferredSize(
+        child: Container(
+          height: 1,
+          color: Color(0xFFA9DFF1),
+        ),
+        preferredSize: null,
+      ),
+      elevation: 0,
     );
   }
 }
@@ -93,7 +130,7 @@ final _appBar = AppBar(
     Padding(
       padding: const EdgeInsets.only(right: 15),
       child: Icon(
-        Icons.settings,
+        TeneIcon.about,
         color: Color(0xFFA9DFF1),
       ),
     )

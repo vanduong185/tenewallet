@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class GeneralSetting extends StatefulWidget {
   @override
@@ -28,7 +29,7 @@ class _GeneralSettingState extends State<GeneralSetting> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(right: 5),
-                      child: Icon(Icons.monetization_on, color: Color(0xFF4AB7E0), size: 24,),
+                      child: Icon(TeneIcon.currency, color: Color(0xFF4AB7E0), size: 24,),
                     ),
                     Text("Currency", style: TextStyle(color: Color(0xFF333333), fontSize: 14, fontWeight: FontWeight.w300),)
                   ],

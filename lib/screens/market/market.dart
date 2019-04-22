@@ -69,7 +69,7 @@ class _MarketState extends State<Market> {
                         padding:
                             EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                         child: CoinBriefInfor()),
-                    CoinChart(coin),
+                    CoinChart(),
                     Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 10),

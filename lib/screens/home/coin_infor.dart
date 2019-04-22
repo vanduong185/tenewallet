@@ -5,6 +5,7 @@ import 'package:flutter_sparkline/flutter_sparkline.dart';
 
 import 'package:tenewallet/screens/market/market.dart';
 import 'package:tenewallet/services/network.dart';
+import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class CoinInfor extends StatefulWidget {
   QRReaderController QRCodeController;
@@ -34,7 +35,7 @@ class _CoinInforState extends State<CoinInfor> {
     isLoading = true;
     Network network = new Network();
     network.getCoin7Days().then((data) {
-      print(data);
+      //print(data);
 
       setState(() {
         coinPriceSeries = data;
@@ -82,7 +83,7 @@ class _CoinInforState extends State<CoinInfor> {
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Icon(
-                FontAwesomeIcons.bitcoin,
+                TeneIcon.crypto_card___currency,
                 size: 30,
                 color: Colors.white,
               ),
@@ -91,12 +92,12 @@ class _CoinInforState extends State<CoinInfor> {
         ),
         GestureDetector(
           onTap: () {
-            widget.QRCodeController.stopScanning();
+            widget.QRCodeController?.stopScanning();
             Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Market(coin))
             ).then((_) {
-              widget.QRCodeController.startScanning();
+              widget.QRCodeController?.startScanning();
             });
           },
           child: Column(

@@ -14,10 +14,12 @@ class EnterPasscode extends StatefulWidget {
 
 class _EnterPasscodeState extends State<EnterPasscode> {
   TextEditingController et;
+  bool hasError;
 
   @override
   void initState() {
     super.initState();
+    hasError = false;
     et = new TextEditingController();
   }
 
@@ -72,13 +74,21 @@ class _EnterPasscodeState extends State<EnterPasscode> {
                   hasTextBorderColor: Color(0xFF4AB7E0),
                   maxLength: 4,
                   maskCharacter: "●",
-                  hasError: false,
+                  hasError: hasError,
                   onDone: (text){
                     if (text == widget.passcode) {
+                      setState(() {
+                        hasError = false;
+                      });
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => Index())
                       );
+                    }
+                    else {
+                      setState(() {
+                        hasError = true;
+                      });
                     }
                   },
                   pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType.AUTO_ADJUST_WIDTH,
@@ -87,6 +97,7 @@ class _EnterPasscodeState extends State<EnterPasscode> {
                   pinTextStyle: TextStyle(fontSize: 16, color: Color(0xFF1980BA)),
                   pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation.defaultNoTransition,
                   pinTextAnimatedSwitcherDuration: Duration(milliseconds: 100),
+
                 ),
               ),
 

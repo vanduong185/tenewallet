@@ -8,6 +8,7 @@ import 'package:tenewallet/screens/home/show_qrcode.dart';
 import 'package:tenewallet/screens/home/scan_qrcode.dart';
 
 import 'package:tenewallet/widgets/background.dart';
+import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -81,7 +82,7 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.only(right: 15),
               child: IconButton(
-                icon: Icon(Icons.settings, color: Color(0xFFA9DFF1),),
+                icon: Icon(TeneIcon.setting, color: Color(0xFFA9DFF1)),
                 tooltip: "Settings",
                 onPressed: () {
                   QRCodeController?.stopScanning();

@@ -20,15 +20,14 @@ class _CoinChartState extends State<CoinChart> {
 
   var selectedOption;
 
-  DateTime _time;
-  num _highPrice;
-  num _lowPrice;
+  TimeSeriesPrice selectedPoint;
 
   List<TimeSeriesPrice> price_data = [];
   bool isLoading;
 
   Future<String> getHistoryData(String url) async {
     setState(() {
+      selectedPoint = null;
       isLoading = true;
     });
 
@@ -40,13 +39,6 @@ class _CoinChartState extends State<CoinChart> {
       var tmp = jsonDecode(response.body);
 
       var data = tmp["Data"];
-
-//      var current_price = data.last;
-//
-//      _time = DateTime.fromMillisecondsSinceEpoch(current_price["time"] * 1000);
-//      _highPrice = current_price["high"];
-//      _lowPrice = current_price["low"];
-
 
       for (var i = 0; i < data.length; i++) {
         var time = new DateTime.fromMillisecondsSinceEpoch(data[i]["time"] * 1000);
@@ -78,7 +70,54 @@ class _CoinChartState extends State<CoinChart> {
 
   List<charts.Series<TimeSeriesPrice, DateTime>> seriesList;
 
-  final simpleCurrencyFormatter  = charts.BasicNumericTickFormatterSpec.fromNumberFormat(new NumberFormat.currency(symbol: "\$", decimalDigits: 0));
+  final simpleCurrencyFormatter = charts.BasicNumericTickFormatterSpec.fromNumberFormat(
+    new NumberFormat.currency(symbol: "\$", decimalDigits: 0)
+  );
+
+  showSelectedPoint(model) {
+    var selectedDatum = model.selectedDatum;
+    if (selectedDatum.isNotEmpty) {
+      var datum = selectedDatum.first.datum;
+      setState(() {
+        selectedPoint = new TimeSeriesPrice(datum.time, datum.high_price, datum.low_price);
+      });
+    }
+  }
+
+  Widget renderSelectedPoint() {
+    if (selectedPoint != null) {
+      return Row(
+        children: <Widget>[
+          Text( selectedOption["type"] == "24h" ?
+            new DateFormat.jm().format(selectedPoint.time)  :
+            new DateFormat.yMd().format(selectedPoint.time)
+          ),
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: Text("●", style: TextStyle(color: Colors.green),),
+              ),
+              Text("\$" + selectedPoint.high_price.toString())
+            ]
+          ),
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: Text("●", style: TextStyle(color: Colors.red),),
+              ),
+              Text("\$" + selectedPoint.low_price.toString())
+            ]
+          )
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      );
+    }
+    else {
+      return Container();
+    }
+  }
 
   @override
   void initState() {
@@ -144,32 +183,7 @@ class _CoinChartState extends State<CoinChart> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        children: <Widget>[
-                          Text(_time != null ? _time.toIso8601String() : ""),
-                          _highPrice != null
-                            ? Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 5),
-                                  child: Text("●", style: TextStyle(color: Colors.green),),
-                                ),
-                                Text("\$" + _highPrice.toString())
-                              ])
-                            : Container(),
-                          _lowPrice != null
-                            ? Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 5),
-                                  child: Text("●", style: TextStyle(color: Colors.red),),
-                                ),
-                                Text("\$" + _lowPrice.toString())
-                              ])
-                            : Container(),
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      ),
+                      child: renderSelectedPoint()
                     ),
                     Container(
                       height: 250,
@@ -184,16 +198,7 @@ class _CoinChartState extends State<CoinChart> {
                         ),
                         selectionModels: [new charts.SelectionModelConfig(
                           type: charts.SelectionModelType.info,
-                          changedListener: (model) {
-                            var selectedDatum = model.selectedDatum;
-                            if (selectedDatum.isNotEmpty) {
-                              setState(() {
-                                _time = selectedDatum.first.datum.time;
-                                _highPrice = selectedDatum.first.datum.high_price;
-                                _lowPrice = selectedDatum.first.datum.low_price;
-                              });
-                            }
-                          },
+                          changedListener: showSelectedPoint
                         )],
                         behaviors: [
                           new charts.SelectNearest(eventTrigger: charts.SelectionTrigger.tapAndDrag, ),

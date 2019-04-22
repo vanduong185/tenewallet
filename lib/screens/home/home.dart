@@ -84,12 +84,12 @@ class _HomeState extends State<Home> {
                 icon: Icon(Icons.settings, color: Color(0xFFA9DFF1),),
                 tooltip: "Settings",
                 onPressed: () {
-                  QRCodeController.stopScanning();
+                  QRCodeController?.stopScanning();
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Setting())
                   ).then((value) {
-                    QRCodeController.startScanning();
+                    QRCodeController?.startScanning();
                   });
                 },
               ),

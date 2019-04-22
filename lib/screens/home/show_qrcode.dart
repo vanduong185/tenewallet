@@ -3,6 +3,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share/share.dart';
 
 class ShowQRCode extends StatefulWidget {
   ScrollController scrollController;
@@ -65,12 +66,12 @@ class _ShowQRCodeState extends State<ShowQRCode> {
                 child: GestureDetector(
                   child: Container(
                     child: new QrImage(
-                      data: "duongdzvcl",
+                      data: "myaddress",
                       size: 200,
                     ),
                   ),
                   onTap: () {
-                    Clipboard.setData( new ClipboardData(text: "duongdzvcl"));
+                    Clipboard.setData( new ClipboardData(text: "myaddress"));
                     Fluttertoast.showToast(
                       msg: "Code is coppied to clipboard",
                       toastLength: Toast.LENGTH_SHORT,
@@ -109,19 +110,24 @@ class _ShowQRCodeState extends State<ShowQRCode> {
                       );
                     },
                   ),
-                  Column(
-                    children: <Widget>[
-                      Icon(
-                        Icons.share,
-                        color: Color(0xFF1980BA),
-                      ),
-                      Text(
-                        "Share",
-                        style: TextStyle(
-                          color: Color(0xFF1980BA)
+                  GestureDetector(
+                    child: Column(
+                      children: <Widget>[
+                        Icon(
+                          Icons.share,
+                          color: Color(0xFF1980BA),
                         ),
-                      )
-                    ],
+                        Text(
+                          "Share",
+                          style: TextStyle(
+                              color: Color(0xFF1980BA)
+                          ),
+                        )
+                      ],
+                    ),
+                    onTap: () {
+                      Share.share('This my address wallet');
+                    },
                   )
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

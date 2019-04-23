@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 import 'package:tenewallet/services/BitCoinAPI.dart';
+import 'package:tenewallet/models/BitWalletInfo.dart';
 
 class ShowQRCode extends StatefulWidget {
   ScrollController scrollController;
@@ -16,10 +17,20 @@ class ShowQRCode extends StatefulWidget {
 }
 
 class _ShowQRCodeState extends State<ShowQRCode> {
+  String walletAddress = '';
+  @override
+  void initState() {
+    BitCoinAPI().getWallet().then((onValue) {
+        setState(() {
+          walletAddress = onValue.address;
+        });
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
     return Padding(
       padding: const EdgeInsets.only(left: 30, right: 15),
       child: Container(
@@ -67,7 +78,7 @@ class _ShowQRCodeState extends State<ShowQRCode> {
                 child: GestureDetector(
                   child: Container(
                     child: new QrImage(
-                      data: "myaddress",
+                      data: walletAddress,
                       size: 200,
                     ),
                   ),
@@ -76,7 +87,7 @@ class _ShowQRCodeState extends State<ShowQRCode> {
                       setState(() {
                       });
                     });
-                    Clipboard.setData( new ClipboardData(text: "myaddress"));
+                    Clipboard.setData( new ClipboardData(text: walletAddress));
                     Fluttertoast.showToast(
                       msg: "Code is coppied to clipboard",
                       toastLength: Toast.LENGTH_SHORT,

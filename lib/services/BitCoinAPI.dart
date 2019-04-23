@@ -47,7 +47,8 @@ class BitCoinAPI {
    */
   BitWalletInfo generateRandomAddress() {
     final keyPair = ECPair.makeRandom(rng: rng);
-    final address = new P2PKH(data: new P2PKHData(pubkey: keyPair.publicKey)).data.address;
+    final address =
+        new P2PKH(data: new P2PKHData(pubkey: keyPair.publicKey)).data.address;
     return new BitWalletInfo(keyPair.toWIF(), address);
   }
 
@@ -57,29 +58,33 @@ class BitCoinAPI {
   Future<BitWalletInfo> getWallet() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String address = prefs.getString('btc_wallet');
-    //if (address != null && address != '') {
+    String secret = prefs.getString('btc_secret');
+    if (address == null || address == '' || secret == null) {
+      prefs.setString('btc_wallet', 'mkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt');
+      prefs.setString(
+          'btc_secret', 'cRgnQe9MUu1JznntrLaoQpB476M8PURvXVQB5R2eqms5tXnzNsrr');
       return new BitWalletInfo(
           'cRgnQe9MUu1JznntrLaoQpB476M8PURvXVQB5R2eqms5tXnzNsrr',
           'mkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt');
-    //}
+    } else {
+      return new BitWalletInfo(secret, address);
+    }
   }
-
 
   Future<String> getBalance() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     BitWalletInfo wallet = await getWallet();
-    print(wallet);
-    String requestURL = AppConfig.BTC_TEST_NET3 + '/addrs/' + wallet.address + '/balance';
+    print(wallet.address);
+    String requestURL =
+        AppConfig.BTC_TEST_NET3 + '/addrs/' + wallet.address + '/balance';
     final response = await http.get(requestURL);
     if (response.statusCode == 200) {
       var result = json.decode(response.body);
-      print('Balance: ' + result['balance'].toString());
-      prefs.setString('last_balance', result['balance'].toString());
-      return result['balance'].toString();
+      print('Balance: ' + (result['balance'] / 100000000).toString());
+      prefs.setString('last_balance', (result['balance'] / 100000000).toString());
+      return (result['balance'] / 100000000).toString() ;
     } else {
       return prefs.getString('last_balance');
     }
   }
-
-
 }

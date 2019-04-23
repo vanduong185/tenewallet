@@ -24,8 +24,8 @@ class _CoinInforState extends State<CoinInfor> {
     "change": "2.233",
     "trend": "up"
   };
-  String balance = '0';
-
+  String balance = '???';
+  String currentPrice = '???';
   bool isLoading;
   List coinPriceSeries;
 
@@ -36,7 +36,7 @@ class _CoinInforState extends State<CoinInfor> {
     isLoading = true;
     Network network = new Network();
     network.getCoin7Days().then((data) {
-      //print(data);
+      print(data.toString());
       setState(() {
         coinPriceSeries = data;
         List<double> a = data.map((e) {
@@ -44,7 +44,12 @@ class _CoinInforState extends State<CoinInfor> {
           return b;
         }).toList();
 
-        print(a);
+        List<double> b = data.map((e) {
+          double x = e["close"];
+          return x;
+        }).toList();
+
+        currentPrice = b[b.length - 1].toString();
         isLoading = false;
       });
     });
@@ -60,14 +65,11 @@ class _CoinInforState extends State<CoinInfor> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Container(
-        height: 80,
-        child: Row(
+        height: 120,
+        child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: renderCoinInfo(),
-            ),
-            renderCoinSparkline()
+            renderCoinInfo(),
+            renderCoinSparkline(),
           ],
         ),
       ),
@@ -77,31 +79,12 @@ class _CoinInforState extends State<CoinInfor> {
   Widget renderCoinInfo() {
     return Row(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
-              color: Color(0xFFF5B300),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Icon(
-                TeneIcon.crypto_card___currency,
-                size: 30,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
         GestureDetector(
           onTap: () {
             widget.QRCodeController?.stopScanning();
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Market(coin))
-            ).then((_) {
+            Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Market(coin)))
+                .then((_) {
               widget.QRCodeController?.startScanning();
             });
           },
@@ -109,43 +92,27 @@ class _CoinInforState extends State<CoinInfor> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Icon(
-                    Icons.attach_money,
-                    color: Colors.white,
-                    size: 20,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Icon(
+                        Icons.account_balance_wallet,
+                        size: 28,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                   Text(
-                    '0',
+                    'Balance: ' + balance + ' ฿',
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.w500),
-                  )
+                        fontSize: 26,
+                        fontWeight: FontWeight.w400),
+                  ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
-              Row(
-                children: <Widget>[
-                  Text(
-                    "0.9BTC",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w200),
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_up,
-                    size: 18,
-                    color: Color(0xFF8BEB4D),
-                  ),
-                  Text(
-                    "12%",
-                    style:
-                    TextStyle(fontSize: 18, color: Color(0xFF8BEB4D)),
-                  )
-                ],
-                mainAxisAlignment: MainAxisAlignment.start,
-              )
             ],
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,25 +125,58 @@ class _CoinInforState extends State<CoinInfor> {
   Widget renderCoinSparkline() {
     if (isLoading) {
       return Expanded(
-        child: Center(child: CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFA9DFF1)))
-        ),
+        child: Center(
+            child: CircularProgressIndicator(
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(Color(0xFFA9DFF1)))),
       );
-    }
-    else {
-      return Expanded(
-        child: Container(
-          width: 150,
-          height: 50,
-          child: Sparkline(
-            data: coinPriceSeries.map((coinPrice) {
-              double highPrice = coinPrice["high"];
-              return highPrice;
-            }).toList(),
-            lineColor: Color(0xFFA9DFF1),
-            pointsMode: PointsMode.all,
-            pointColor: Colors.white,
-          ),
+    } else {
+      return Container(
+        margin: EdgeInsets.only(right: 25, top: 15),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Icon(
+                  Icons.show_chart,
+                  size: 24,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            Text(
+              'Price:' + currentPrice + ' \$',
+              style: TextStyle(
+                  color: Colors.white, fontSize: 22, fontWeight: FontWeight.w200),
+            ),
+            Icon(
+              Icons.keyboard_arrow_up,
+              size: 18,
+              color: Color(0xFF8BEB4D),
+            ),
+            Text(
+              "12%  ",
+              style: TextStyle(fontSize: 18, color: Color(0xFF8BEB4D)),
+            ),
+            Expanded(
+              child: Container(
+                width: 150,
+                height: 50,
+                child: Sparkline(
+                  data: coinPriceSeries.map((coinPrice) {
+                    double highPrice = coinPrice["high"];
+                    return highPrice;
+                  }).toList(),
+                  lineColor: Color(0xFFA9DFF1),
+                  pointsMode: PointsMode.all,
+                  pointColor: Colors.white,
+                ),
+              ),
+            )
+          ],
+          mainAxisAlignment: MainAxisAlignment.start,
         ),
       );
     }

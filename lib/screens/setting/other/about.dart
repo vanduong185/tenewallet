@@ -26,26 +26,31 @@ class _AboutState extends State<About> {
             )
         ),
         body: SingleChildScrollView(
-          child: AboutDialog(
-            applicationName: "Tenewallet",
-            applicationVersion: "Version 1.0.0",
-            applicationLegalese: "",
-            applicationIcon: Icon(Icons.account_balance_wallet, color: Color(0xFF1980BA),),
+          child: Column(
             children: <Widget>[
-              Column(
+              AboutDialog(
+                applicationName: "Tenewallet",
+                applicationVersion: "Version 1.0.0",
+                applicationLegalese: "",
+                applicationIcon: Icon(Icons.account_balance_wallet, color: Color(0xFF1980BA),),
                 children: <Widget>[
-                  Text("Powered by ", style: TextStyle(color: Colors.black54, fontSize: 12),),
-                  GestureDetector(
-                    child: Text("Teneocto.io", style: new TextStyle(color: Color(0xFF1980BA)  )),
-                    onTap: () {
-                      launch("https://teneocto.io");
-                    },
+                  Column(
+                    children: <Widget>[
+                      Text("Powered by ", style: TextStyle(color: Colors.black54, fontSize: 12),),
+                      GestureDetector(
+                        child: Text("Teneocto.io", style: new TextStyle(color: Color(0xFF1980BA)  )),
+                        onTap: () {
+                          launch("https://teneocto.io");
+                        },
+                      )
+                    ],
+
                   )
                 ],
-
-              )
+              ),
+              LicensePage()
             ],
-          ),
+          )
         )
     );
   }

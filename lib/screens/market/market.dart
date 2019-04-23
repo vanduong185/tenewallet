@@ -22,19 +22,9 @@ class _MarketState extends State<Market> {
   Coin coin;
   bool isLoading;
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  CoinChart coinChart;
 
-  @override
-  initState() {
-    super.initState();
-
-    setState(() {
-      isLoading = true;
-    });
-
+  getData() {
     Firestore.instance.collection("coinlist").snapshots().listen((data) {
       var doc = data.documents[0].data;
       coin = new Coin();
@@ -56,29 +46,56 @@ class _MarketState extends State<Market> {
     });
   }
 
+  Future<Null> refresh() async {
+    setState(() {
+    });
+    return null;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  initState() {
+    super.initState();
+
+    isLoading = true;
+
+    coinChart = new CoinChart();
+
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Background(
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: renderAppbar(),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                        child: CoinBriefInfor()),
-                    CoinChart(),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 10),
-                        child: CoinDetails(coin))
-                  ],
-                ),
-              ),
+        body: RefreshIndicator(
+          child: isLoading
+              ? Center(child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFA9DFF1))
+          ))
+              : SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                    padding:
+                    EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    child: CoinBriefInfor()),
+                coinChart,
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
+                    child: CoinDetails(coin))
+              ],
+            ),
+          ),
+          onRefresh: refresh
+        )
       ),
     );
   }

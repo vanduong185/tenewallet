@@ -25,6 +25,10 @@ class _HomeState extends State<Home> {
     "trend": "up"
   };
 
+  String title;
+  double screenWidth;
+  double screenHeight;
+
   QRReaderController QRCodeController;
   ScrollController scrollController;
 
@@ -32,7 +36,25 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
 
+    title = "Receive";
+
     scrollController = new ScrollController();
+
+    scrollController.addListener(() {
+      if (screenWidth != null && screenHeight != null) {
+        if (scrollController.offset >= screenWidth*0.85) {
+          setState(() {
+            title = "Send";
+          });
+        }
+
+        if (scrollController.offset <= screenWidth*0.15) {
+          setState(() {
+            title = "Receive";
+          });
+        }
+      }
+    });
 
     availableCameras().then((list_camera) {
       QRCodeController = new QRReaderController(list_camera[0], ResolutionPreset.medium, [CodeFormat.qr], (dynamic value) {
@@ -66,15 +88,15 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
 
     return Background(
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Text(
-            "Tenewallet",
+            title,
             style: TextStyle(color: Color(0xFFA9DFF1)),
           ),
           centerTitle: true,

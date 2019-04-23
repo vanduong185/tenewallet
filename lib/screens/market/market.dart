@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tenewallet/screens/market/coin_chart.dart';
 import 'package:tenewallet/screens/market/coin_details.dart';
 import 'package:tenewallet/screens/market/coin_brief_infor.dart';
-import 'package:tenewallet/models/coin.dart';
+import 'package:tenewallet/models/CoinInfo.dart';
 import "package:tenewallet/widgets/background.dart";
 
 class Market extends StatefulWidget {

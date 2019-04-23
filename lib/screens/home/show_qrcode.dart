@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
+import 'package:tenewallet/services/BitCoinAPI.dart';
 
 class ShowQRCode extends StatefulWidget {
   ScrollController scrollController;
@@ -71,6 +72,10 @@ class _ShowQRCodeState extends State<ShowQRCode> {
                     ),
                   ),
                   onTap: () {
+                    BitCoinAPI().getBalance().then((onValue) {
+                      setState(() {
+                      });
+                    });
                     Clipboard.setData( new ClipboardData(text: "myaddress"));
                     Fluttertoast.showToast(
                       msg: "Code is coppied to clipboard",

@@ -9,6 +9,7 @@ import 'package:tenewallet/screens/home/scan_qrcode.dart';
 
 import 'package:tenewallet/widgets/background.dart';
 import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
+import 'package:tenewallet/services/BitCoinAPI.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -17,13 +18,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var crypto = {"name": "Bitcoin", "amount": "5.00", "recipent_address": null};
-  var coin = {
-    "name": "BTC",
-    "value": "15454421",
-    "lastest_price": "4,5562",
-    "change": "2.233",
-    "trend": "up"
-  };
 
   QRReaderController QRCodeController;
   ScrollController scrollController;
@@ -35,13 +29,14 @@ class _HomeState extends State<Home> {
     scrollController = new ScrollController();
 
     availableCameras().then((list_camera) {
-      QRCodeController = new QRReaderController(list_camera[0], ResolutionPreset.medium, [CodeFormat.qr], (dynamic value) {
+      QRCodeController = new QRReaderController(
+          list_camera[0], ResolutionPreset.medium, [CodeFormat.qr],
+          (dynamic value) {
         crypto["recipent_address"] = value;
         QRCodeController.stopScanning();
-        Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SendingPage(crypto))
-        ).then((_) {
+        Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SendingPage(crypto)))
+            .then((_) {
           QRCodeController.startScanning();
         });
       });
@@ -68,67 +63,94 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    // set up the list options
+    Widget optionOne = SimpleDialogOption(
+      child: const Text('Main Net', style: TextStyle(fontSize: 20),),
+      onPressed: () {},
+    );
+    Widget optionTwo = SimpleDialogOption(
+      child: const Text('Test Net', style: TextStyle(fontSize: 20, ),),
+      onPressed: () {},
+    );
+
+    // set up the SimpleDialog
+    SimpleDialog dialog = SimpleDialog(
+      title: const Text('Choose NetWork:'),
+      children: <Widget>[
+        optionOne,
+        optionTwo
+      ],
+    );
 
     return Background(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Text(
-            "Tenewallet",
-            style: TextStyle(color: Color(0xFFA9DFF1)),
-          ),
-          centerTitle: true,
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: IconButton(
-                icon: Icon(TeneIcon.setting, color: Color(0xFFA9DFF1)),
-                tooltip: "Settings",
-                onPressed: () {
-                  QRCodeController?.stopScanning();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Setting())
-                  ).then((value) {
-                    QRCodeController?.startScanning();
-                  });
-                },
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              title: Text(
+                "Tenewallet",
+                style: TextStyle(color: Colors.white),
               ),
-            )
-          ],
-          backgroundColor: Colors.transparent,
-          bottom: PreferredSize(
-            child: Container(
-              height: 1,
-              color: Color(0xFFA9DFF1),
+              centerTitle: true,
+              actions: <Widget>[
+//                Padding(
+//                  padding: const EdgeInsets.only(right: 15),
+//                  child: IconButton(
+//                    icon: Icon(Icons.language, color: Colors.white, size: 29,),
+//                    tooltip: "NetWork",
+//                    onPressed: () {
+//                      showDialog(
+//                        context: context,
+//                        builder: (BuildContext context) {
+//                          return dialog;
+//                        },
+//                      );
+//                    },
+//                  ),
+//                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: IconButton(
+                    icon: Icon(TeneIcon.setting, color: Colors.white),
+                    tooltip: "Settings",
+                    onPressed: () {
+                      QRCodeController?.stopScanning();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Setting())).then((value) {
+                        QRCodeController?.startScanning();
+                      });
+                    },
+                  ),
+                )
+              ],
+              backgroundColor: Colors.transparent,
+              bottom: PreferredSize(
+                child: Container(
+                  height: 1,
+                  color: Color(0xFFA9DFF1),
+                ),
+                preferredSize: null,
+              ),
+              elevation: 0,
             ),
-            preferredSize: null,
-          ),
-          elevation: 0,
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
+            body: SingleChildScrollView(
+                child: Column(children: <Widget>[
               CoinInfor(QRCodeController),
               Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: Container(
-                  width: screenWidth,
-                  height: 400,
-                  child: ListView(
-                    children: <Widget>[
-                      ShowQRCode(scrollController),
-                      ScanQRCode(crypto, QRCodeController, scrollController)
-                    ],
-                    scrollDirection: Axis.horizontal,
-                    controller: scrollController,
-                  )
-                ),
+                    width: screenWidth,
+                    height: 400,
+                    child: ListView(
+                      children: <Widget>[
+                        ShowQRCode(scrollController),
+                        ScanQRCode(crypto, QRCodeController, scrollController)
+                      ],
+                      scrollDirection: Axis.horizontal,
+                      controller: scrollController,
+                    )),
               )
-            ]
-          )
-        )
-      )
-    );
+            ]))));
   }
 }

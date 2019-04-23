@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 
 import 'package:tenewallet/screens/market/market.dart';
 import 'package:tenewallet/services/network.dart';
 import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
+import 'package:tenewallet/services/BitCoinAPI.dart';
 
 class CoinInfor extends StatefulWidget {
   QRReaderController QRCodeController;
@@ -24,6 +24,7 @@ class _CoinInforState extends State<CoinInfor> {
     "change": "2.233",
     "trend": "up"
   };
+  String balance = '0';
 
   bool isLoading;
   List coinPriceSeries;
@@ -36,7 +37,6 @@ class _CoinInforState extends State<CoinInfor> {
     Network network = new Network();
     network.getCoin7Days().then((data) {
       //print(data);
-
       setState(() {
         coinPriceSeries = data;
         List<double> a = data.map((e) {
@@ -46,6 +46,11 @@ class _CoinInforState extends State<CoinInfor> {
 
         print(a);
         isLoading = false;
+      });
+    });
+    BitCoinAPI().getBalance().then((onValue) {
+      setState(() {
+        balance = onValue;
       });
     });
   }
@@ -110,7 +115,7 @@ class _CoinInforState extends State<CoinInfor> {
                     size: 20,
                   ),
                   Text(
-                    "4000",
+                    '0',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 36,
@@ -160,7 +165,9 @@ class _CoinInforState extends State<CoinInfor> {
     }
     else {
       return Expanded(
-        child: Center(
+        child: Container(
+          width: 150,
+          height: 50,
           child: Sparkline(
             data: coinPriceSeries.map((coinPrice) {
               double highPrice = coinPrice["high"];

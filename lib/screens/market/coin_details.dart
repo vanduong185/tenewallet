@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tenewallet/models/coin.dart';
+import 'package:tenewallet/models/CoinInfo.dart';
 
 class CoinDetails extends StatefulWidget {
   Coin _coin;

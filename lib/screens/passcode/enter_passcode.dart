@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
-import 'dart:math';
 
 import 'package:tenewallet/screens/index.dart';
 
@@ -14,23 +13,14 @@ class EnterPasscode extends StatefulWidget {
 }
 
 class _EnterPasscodeState extends State<EnterPasscode> {
-  PinCodeTextField pinCodeTextField;
-  PinCodeTextField pinCodeTextField2;
-  //TextEditingController et;
   bool hasError;
-  int counter;
-  var rng;
+  List<PinCodeTextField> listPin;
+  int index;
+  PinCodeTextField pin;
 
-  @override
-  void initState() {
-    super.initState();
-    hasError = false;
-    counter = 0;
-
-    rng = new Random();
-
-    pinCodeTextField = new PinCodeTextField(
-      key: Key(counter.toString()),
+  PinCodeTextField generateNewPin (int i) {
+    return new PinCodeTextField(
+      key: Key(i.toString()),
       autofocus: true,
       controller: new TextEditingController(),
       hideCharacter: true,
@@ -40,102 +30,52 @@ class _EnterPasscodeState extends State<EnterPasscode> {
       hasTextBorderColor: Color(0xFF4AB7E0),
       maxLength: 4,
       maskCharacter: "●",
-      hasError: false,
-      onDone: (text){
+      hasError: hasError,
+      onTextChanged: (text) {
         if (text == widget.passcode) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => Index())
-          );
-        }
-        else {
           setState(() {
-            hasError = true;
+            hasError = false;
           });
-        }
-      },
-      pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType.AUTO_ADJUST_WIDTH,
-      wrapAlignment: WrapAlignment.start,
-      pinBoxDecoration: ProvidedPinBoxDecoration.defaultPinBoxDecoration,
-      pinTextStyle: TextStyle(fontSize: 16, color: Color(0xFF1980BA)),
-      pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation.defaultNoTransition,
-      pinTextAnimatedSwitcherDuration: Duration(milliseconds: 100),
-    );
-
-    pinCodeTextField2 = new PinCodeTextField(
-      autofocus: true,
-      controller: new TextEditingController(),
-      hideCharacter: true,
-      highlight: true,
-      highlightColor: Colors.green,
-      defaultBorderColor: Colors.green,
-      hasTextBorderColor: Colors.green,
-      maxLength: 4,
-      maskCharacter: "#",
-      hasError: false,
-      onDone: (text){
-        if (text == widget.passcode) {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => Index())
           );
         }
         else {
-          setState(() {
-            hasError = true;
-          });
+          if (text.length == 4) {
+            setState(() {
+                //hasError = true;
+                index = i + 1;
+                listPin.add(generateNewPin(index));
+            });
+          }
         }
       },
-      pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType.AUTO_ADJUST_WIDTH,
+      pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType
+          .AUTO_ADJUST_WIDTH,
       wrapAlignment: WrapAlignment.start,
       pinBoxDecoration: ProvidedPinBoxDecoration.defaultPinBoxDecoration,
-      pinTextStyle: TextStyle(fontSize: 16, color: Colors.red),
-      pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation.defaultNoTransition,
+      pinTextStyle: TextStyle(fontSize: 16, color: Color(0xFF1980BA)),
+      pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation
+          .defaultNoTransition,
       pinTextAnimatedSwitcherDuration: Duration(milliseconds: 100),
     );
   }
 
-  Widget rendernew() {
-    String a = rng.nextInt(100).toString();
-    if (hasError) {
-      return new PinCodeTextField(
-        key: Key("dumamaimoira"),
-        //autofocus: true,
-        controller: new TextEditingController(),
-        hideCharacter: true,
-        highlight: true,
-        highlightColor: Colors.green,
-        defaultBorderColor: Colors.green,
-        hasTextBorderColor: Colors.green,
-        maxLength: 4,
-        maskCharacter: "#",
-        hasError: false,
-        onDone: (text){
-          if (text == widget.passcode) {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => Index())
-            );
-          }
-          else {
-            setState(() {
-              hasError = true;
-            });
-          }
-        },
-        pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType.AUTO_ADJUST_WIDTH,
-        wrapAlignment: WrapAlignment.start,
-        pinBoxDecoration: ProvidedPinBoxDecoration.defaultPinBoxDecoration,
-        pinTextStyle: TextStyle(fontSize: 16, color: Colors.red),
-        pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation.defaultNoTransition,
-        pinTextAnimatedSwitcherDuration: Duration(milliseconds: 100),
-      );
-    }
-    else {
-      return pinCodeTextField;
-    }
+  @override
+  void initState() {
+    super.initState();
+    hasError = false;
+    index = 0;
+    listPin = [];
+    listPin.add(generateNewPin(index));
   }
 
+  Widget renderPincode() {
+    print(index);
+    print(listPin[index]);
+    return listPin[index];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,9 +118,8 @@ class _EnterPasscodeState extends State<EnterPasscode> {
 
               Padding(
                 padding: const EdgeInsets.only(bottom: 30),
-                child: rendernew()
+                child: renderPincode(),
               ),
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: GestureDetector(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
-
+import 'package:tenewallet/screens/Statics.dart';
 import 'package:tenewallet/screens/market/market.dart';
 import 'package:tenewallet/services/network.dart';
 import 'package:tenewallet/services/BitCoinAPI.dart';
@@ -35,9 +35,15 @@ class _CoinInforState extends State<CoinInfor> {
     super.initState();
 
     isLoading = true;
+    BitCoinAPI().getBalance().then((onValue) {
+      setState(() {
+        balance = onValue;
+        Static.balance = balance;
+      });
+    });
+
     Network network = new Network();
     network.getCoin7Days().then((data) {
-      print(data.toString());
       setState(() {
         coinPriceSeries = data;
 
@@ -47,6 +53,7 @@ class _CoinInforState extends State<CoinInfor> {
         }).toList();
 
         currentPrice = b[b.length - 1].toString();
+        Static.sBtcPrice = double.parse(currentPrice);
         isLoading = false;
         double start = b[0];
         double end = b[b.length - 1];
@@ -57,11 +64,6 @@ class _CoinInforState extends State<CoinInfor> {
           isUp = false;
         }
         percentChange = (temp.abs() / start * 100).floorToDouble();
-      });
-    });
-    BitCoinAPI().getBalance().then((onValue) {
-      setState(() {
-        balance = onValue;
       });
     });
   }
@@ -190,7 +192,8 @@ class _CoinInforState extends State<CoinInfor> {
                     child: Sparkline(
                       sharpCorners: false,
                       data: coinPriceSeries.map((coinPrice) {
-                        double highPrice = coinPrice["high"];
+                        print(coinPrice["high"]);
+                        double highPrice = double.parse(coinPrice["high"].toString());
                         return highPrice;
                       }).toList(),
                       lineColor: Color(0xFFA9DFF1),

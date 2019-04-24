@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 
-import "package:tenewallet/screens/wallet/sending.dart";
+import "package:tenewallet/screens/wallet/Sending.dart";
 import "package:tenewallet/screens/setting/setting.dart";
-import 'package:tenewallet/screens/home/coin_infor.dart';
-import 'package:tenewallet/screens/home/show_qrcode.dart';
-import 'package:tenewallet/screens/home/scan_qrcode.dart';
+import 'package:tenewallet/screens/home/CoinInfo.dart';
+import 'package:tenewallet/screens/home/ShowQRCode.dart';
+import 'package:tenewallet/screens/home/ScanQRCode.dart';
 
 import 'package:tenewallet/widgets/background.dart';
 import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
@@ -16,7 +16,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var crypto = {"name": "Bitcoin", "amount": "5.00", "recipent_address": null};
+  var crypto = {"name": "Bitcoin", "balance": "0", "recipent_address": null, "price" : ""};
 
   QRReaderController QRCodeController;
   ScrollController scrollController;
@@ -53,7 +53,6 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    print("dispose");
     QRCodeController?.dispose();
     super.dispose();
   }

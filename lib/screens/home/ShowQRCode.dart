@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 import 'package:tenewallet/services/BitCoinAPI.dart';
-import 'package:tenewallet/models/BitWalletInfo.dart';
+import 'package:tenewallet/screens/Statics.dart';
 
 class ShowQRCode extends StatefulWidget {
   ScrollController scrollController;
@@ -23,6 +22,7 @@ class _ShowQRCodeState extends State<ShowQRCode> {
     BitCoinAPI().getWallet().then((onValue) {
         setState(() {
           walletAddress = onValue.address;
+          Static.publicAddress = onValue.address;
         });
     });
 

@@ -36,6 +36,7 @@ dependencies:
   fluttertoast: ^3.0.1
   share: ^0.6.1
   bitcoin_flutter: ^1.0.7
+  flutter_inappbrowser: ^1.1.1
 
 dev_dependencies:
   flutter_test:

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import "package:qrcode_reader/qrcode_reader.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:tenewallet/screens/wallet/confirm_sending.dart';
+import 'package:tenewallet/screens/wallet/ConfirmSending.dart';
 import 'package:tenewallet/services/BitCoinAPI.dart';
+import 'package:tenewallet/screens/Statics.dart';
 
 class SendingPage extends StatefulWidget {
   var _crypto;
@@ -18,8 +19,8 @@ class SendingPage extends StatefulWidget {
 
 class _SendingPageState extends State<SendingPage> {
   var crypto;
-  var recipent_address;
-  var sent_crypto_amount;
+  var recipentAddress;
+  String sentAmount = '0';
 
   TextEditingController eCtrl1 = new TextEditingController();
   TextEditingController eCtrl2 = new TextEditingController();
@@ -51,11 +52,18 @@ class _SendingPageState extends State<SendingPage> {
   @override
   void initState() {
     super.initState();
-
+    eCtrl2.text = '0';
     if (this.crypto["recipent_address"] != null) {
       eCtrl1.text = this.crypto["recipent_address"];
-      recipent_address = this.crypto["recipent_address"];
+      recipentAddress = this.crypto["recipent_address"];
     }
+    BitCoinAPI().getBalanceOffline().then((onValue) {
+      setState(() {
+        this.crypto["balance"] = onValue;
+      });
+    });
+
+    print('price:' + Static.sBtcPrice.toString());
   }
 
   @override
@@ -91,14 +99,32 @@ class _SendingPageState extends State<SendingPage> {
                 ),
               ),
               onTap: () {
-                if (recipent_address != null && sent_crypto_amount != null) {
-                  if (recipent_address.length > 0) {
+                try {
+                  double.parse(sentAmount).toString();
+                } catch (err) {
+                  Fluttertoast.showToast(
+                      msg: "Wrong balance value!!!",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIos: 1,
+                      fontSize: 18.0);
+                  return;
+                }
+                if (recipentAddress != null && sentAmount != null) {
+                  if (double.parse(sentAmount) > double.parse(crypto['balance'])) {
+                    Fluttertoast.showToast(
+                        msg: "Not enough balance!!!",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIos: 1,
+                        fontSize: 18.0);
+                  } else if (recipentAddress.length > 0) {
                     var transaction = {
-                      "recipent_address": recipent_address,
-                      "sent_crypto_amount": sent_crypto_amount
+                      "recipent_address": recipentAddress,
+                      "sent_crypto_amount": sentAmount
                     };
 
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
@@ -110,7 +136,7 @@ class _SendingPageState extends State<SendingPage> {
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.BOTTOM,
                       timeInSecForIos: 1,
-                      fontSize: 16.0);
+                      fontSize: 18.0);
                 }
               },
             ),
@@ -148,7 +174,7 @@ class _SendingPageState extends State<SendingPage> {
                       onChanged: (text) {
                         print(text);
                         setState(() {
-                          this.recipent_address = text;
+                          this.recipentAddress = text;
                         });
                       },
                       decoration: InputDecoration(
@@ -173,7 +199,7 @@ class _SendingPageState extends State<SendingPage> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Text(crypto["name"],
+                        Text('Amount',
                             style: TextStyle(
                                 color: Color(0xFF1980BA),
                                 fontSize: 16,
@@ -192,7 +218,10 @@ class _SendingPageState extends State<SendingPage> {
                       onChanged: (number) {
                         print(number);
                         setState(() {
-                          this.sent_crypto_amount = number;
+                          sentAmount = number;
+//                          if (double.parse(sentAmount) > double.parse(crypto['balance'])) {
+//                            eCtrl2.text = this.crypto["balance"].toString();
+//                          }
                         });
                       },
                       decoration: InputDecoration(
@@ -200,7 +229,7 @@ class _SendingPageState extends State<SendingPage> {
                         child: Column(
                           children: <Widget>[
                             Text(
-                              "MAX",
+                              "BTC",
                               style: TextStyle(
                                   color: Colors.black54, fontSize: 14),
                             )
@@ -209,8 +238,8 @@ class _SendingPageState extends State<SendingPage> {
                         ),
                         onTap: () {
                           setState(() {
-                            eCtrl2.text = crypto["amount"];
-                            sent_crypto_amount = crypto["amount"];
+                            //eCtrl2.text = crypto["amount"];
+                            //sentAmount = crypto["amount"];
                           });
                         },
                       )),
@@ -225,12 +254,12 @@ class _SendingPageState extends State<SendingPage> {
                     alignment: Alignment.centerLeft,
                     child: Row(
                       children: <Widget>[
-                        Text('Estimate value : ',
+                        Text('Current balance : ',
                             style: TextStyle(
                                 color: Color(0xFF1980BA),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500)),
-                        Text('~ 100 \$',
+                        Text(crypto['balance'] + ' BTC',
                             style: TextStyle(
                                 color: Colors.blueGrey,
                                 fontSize: 16,
@@ -243,16 +272,20 @@ class _SendingPageState extends State<SendingPage> {
                     alignment: Alignment.centerLeft,
                     child: Row(
                       children: <Widget>[
-                        Text('Estimate network fee : ',
+                        Text('Estimate value : ',
                             style: TextStyle(
                                 color: Color(0xFF1980BA),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500)),
-                        Text('~ 100 \$',
+                    (sentAmount != null && sentAmount != '') ? Text((double.parse(sentAmount) * Static.sBtcPrice).floorToDouble().toString() + ' \$',
                             style: TextStyle(
                                 color: Colors.blueGrey,
                                 fontSize: 16,
-                                fontWeight: FontWeight.w500)),
+                                fontWeight: FontWeight.w500)) : Text('0 \$',
+                        style: TextStyle(
+                            color: Colors.blueGrey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500)),
                       ],
                     )))
           ],

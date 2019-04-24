@@ -9,7 +9,6 @@ import 'package:tenewallet/screens/home/scan_qrcode.dart';
 
 import 'package:tenewallet/widgets/background.dart';
 import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
-import 'package:tenewallet/services/BitCoinAPI.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -107,6 +106,22 @@ class _HomeState extends State<Home> {
 //                    },
 //                  ),
 //                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: IconButton(
+                    icon: Icon(Icons.history, color: Colors.white),
+                    tooltip: "Settings",
+                    onPressed: () {
+                      QRCodeController?.stopScanning();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Setting())).then((value) {
+                        QRCodeController?.startScanning();
+                      });
+                    },
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(right: 15),
                   child: IconButton(

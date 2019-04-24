@@ -73,27 +73,7 @@ class _ScanQRCodeState extends State<ScanQRCode> {
                         GestureDetector(
                           child: Column(
                             children: <Widget>[
-                              Icon(FontAwesomeIcons.longArrowAltLeft, color: Color(0xFFC5C5C5)),
-                              Text("RECEIVE",
-                                style: TextStyle(
-                                    color: Color(0xFFC5C5C5),
-                                    fontWeight: FontWeight.w500
-                                ),
-                              )
-                            ],
-                          ),
-                          onTap: () {
-                            widget.scrollController.animateTo(
-                              widget.scrollController.offset - screenWidth,
-                              curve: Curves.linear,
-                              duration: Duration(milliseconds: 200)
-                            );
-                          },
-                        ),
-                        GestureDetector(
-                          child: Column(
-                            children: <Widget>[
-                              Icon(Icons.info, color: Colors.white),
+                              Icon(Icons.input, color: Colors.white),
                               Text("Input",
                                 style: TextStyle(
                                   color: Colors.white,

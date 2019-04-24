@@ -7,8 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:tenewallet/config/AppConfig.dart';
 import 'dart:convert';
+import 'dart:core';
 
 class BitCoinAPI {
+
   rng(int number) {
     return 1;
   }
@@ -87,4 +89,5 @@ class BitCoinAPI {
       return prefs.getString('last_balance');
     }
   }
+
 }

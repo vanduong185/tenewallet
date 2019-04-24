@@ -89,7 +89,7 @@ class _ShowQRCodeState extends State<ShowQRCode> {
                     });
                     Clipboard.setData( new ClipboardData(text: walletAddress));
                     Fluttertoast.showToast(
-                      msg: "Code is coppied to clipboard",
+                      msg: "Address is coppied to clipboard",
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.CENTER,
                       timeInSecForIos: 1,
@@ -102,30 +102,30 @@ class _ShowQRCodeState extends State<ShowQRCode> {
               ),
               Row(
                 children: <Widget>[
-                  GestureDetector(
-                    child: Column(
-                      children: <Widget>[
-                        Icon(
-                          FontAwesomeIcons.longArrowAltRight,
-                          color: Color(0xFFC5C5C5),
-                        ),
-                        Text(
-                          "SEND",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFFC5C5C5)
-                          ),
-                        )
-                      ],
-                    ),
-                    onTap: () {
-                      widget.scrollController.animateTo(
-                        widget.scrollController.offset + screenWidth,
-                        curve: Curves.linear,
-                        duration: Duration(milliseconds: 200)
-                      );
-                    },
-                  ),
+//                  GestureDetector(
+//                    child: Column(
+//                      children: <Widget>[
+//                        Icon(
+//                          FontAwesomeIcons.longArrowAltRight,
+//                          color: Color(0xFFC5C5C5),
+//                        ),
+//                        Text(
+//                          "SEND",
+//                          style: TextStyle(
+//                              fontWeight: FontWeight.w500,
+//                              color: Color(0xFFC5C5C5)
+//                          ),
+//                        )
+//                      ],
+//                    ),
+//                    onTap: () {
+//                      widget.scrollController.animateTo(
+//                        widget.scrollController.offset + screenWidth,
+//                        curve: Curves.linear,
+//                        duration: Duration(milliseconds: 200)
+//                      );
+//                    },
+//                  ),
                   GestureDetector(
                     child: Column(
                       children: <Widget>[

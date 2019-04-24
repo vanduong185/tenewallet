@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tenewallet/screens/Statics.dart';
 import 'package:tenewallet/services/BitCoinAPI.dart';
 
-
 class ConfirmSendingPage extends StatefulWidget {
   var _transaction;
 
@@ -20,6 +19,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
   var from;
   var to;
   var amount;
+  bool isLoading = false;
 
   TextEditingController tCtrl = new TextEditingController();
 
@@ -237,10 +237,14 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                 ),
                 onTap: () {
                   // confirm transaction
-                  BitCoinAPI()
-                      .createTransaction(
-                          transaction["recipent_address"].toString(),
-                          double.parse(transaction['sent_crypto_amount']));
+                  isLoading = true;
+                  try {
+                    BitCoinAPI().createTransaction(context,
+                        transaction["recipent_address"].toString(),
+                        double.parse(transaction['sent_crypto_amount']));
+                  } catch (err) {
+
+                  }
                 },
               )
             ],

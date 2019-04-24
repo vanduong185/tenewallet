@@ -5,6 +5,8 @@ import 'package:tenewallet/screens/Statics.dart';
 import 'package:tenewallet/screens/market/market.dart';
 import 'package:tenewallet/services/network.dart';
 import 'package:tenewallet/services/BitCoinAPI.dart';
+import 'package:tenewallet/screens/Statics.dart';
+import 'dart:async';
 
 class CoinInfor extends StatefulWidget {
   QRReaderController QRCodeController;
@@ -15,7 +17,7 @@ class CoinInfor extends StatefulWidget {
   _CoinInforState createState() => _CoinInforState();
 }
 
-class _CoinInforState extends State<CoinInfor> {
+class _CoinInforState extends State<CoinInfor> with WidgetsBindingObserver, RouteAware {
   var coin = {
     "name": "BTC",
     "value": "15454421",
@@ -30,10 +32,7 @@ class _CoinInforState extends State<CoinInfor> {
   bool isUp = false;
   double percentChange;
 
-  @override
-  void initState() {
-    super.initState();
-
+  doInit() {
     isLoading = true;
     BitCoinAPI().getBalance().then((onValue) {
       setState(() {
@@ -67,6 +66,41 @@ class _CoinInforState extends State<CoinInfor> {
       });
     });
   }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    doInit();
+    // runs every 1 second
+    Timer.periodic(new Duration(seconds: 10), (timer) {
+      if (Static.isNeedUpdate) {
+        BitCoinAPI().getBalance().then((onValue) {
+          setState(() {
+            balance = onValue;
+            Static.balance = balance;
+          });
+        });
+        Static.isNeedUpdate = false;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      doInit();
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +226,6 @@ class _CoinInforState extends State<CoinInfor> {
                     child: Sparkline(
                       sharpCorners: false,
                       data: coinPriceSeries.map((coinPrice) {
-                        print(coinPrice["high"]);
                         double highPrice = double.parse(coinPrice["high"].toString());
                         return highPrice;
                       }).toList(),

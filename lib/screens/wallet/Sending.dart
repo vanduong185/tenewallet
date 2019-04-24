@@ -28,21 +28,6 @@ class _SendingPageState extends State<SendingPage> {
     this.crypto = crypto;
   }
 
-  openQrReader() {
-    Future<String> futureString = new QRCodeReader()
-        .setAutoFocusIntervalInMs(200)
-        .setForceAutoFocus(true)
-        .setTorchEnabled(true)
-        .setHandlePermissions(true)
-        .setExecuteAfterPermissionGranted(true)
-        .scan();
-    futureString.then((string) {
-      setState(() {
-        eCtrl1.text = string;
-      });
-    });
-  }
-
   @override
   void dispose() {
     super.dispose();

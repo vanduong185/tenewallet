@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
-
+import 'package:flutter_web_view/flutter_web_view.dart';
 import "package:tenewallet/screens/wallet/Sending.dart";
 import "package:tenewallet/screens/setting/setting.dart";
 import 'package:tenewallet/screens/home/CoinInfo.dart';
 import 'package:tenewallet/screens/home/ShowQRCode.dart';
 import 'package:tenewallet/screens/home/ScanQRCode.dart';
-
+import 'package:tenewallet/screens/Statics.dart';
 import 'package:tenewallet/widgets/background.dart';
 import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
@@ -16,7 +16,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var crypto = {"name": "Bitcoin", "balance": "0", "recipent_address": null, "price" : ""};
+  var crypto = {
+    "name": "Bitcoin",
+    "balance": "0",
+    "recipent_address": null,
+    "price": ""
+  };
 
   QRReaderController QRCodeController;
   ScrollController scrollController;
@@ -63,21 +68,26 @@ class _HomeState extends State<Home> {
     double screenHeight = MediaQuery.of(context).size.height;
     // set up the list options
     Widget optionOne = SimpleDialogOption(
-      child: const Text('Main Net', style: TextStyle(fontSize: 20),),
+      child: const Text(
+        'Main Net',
+        style: TextStyle(fontSize: 20),
+      ),
       onPressed: () {},
     );
     Widget optionTwo = SimpleDialogOption(
-      child: const Text('Test Net', style: TextStyle(fontSize: 20, ),),
+      child: const Text(
+        'Test Net',
+        style: TextStyle(
+          fontSize: 20,
+        ),
+      ),
       onPressed: () {},
     );
 
     // set up the SimpleDialog
     SimpleDialog dialog = SimpleDialog(
       title: const Text('Choose NetWork:'),
-      children: <Widget>[
-        optionOne,
-        optionTwo
-      ],
+      children: <Widget>[optionOne, optionTwo],
     );
 
     return Background(
@@ -88,8 +98,37 @@ class _HomeState extends State<Home> {
                 "Tenewallet",
                 style: TextStyle(color: Colors.white),
               ),
-              centerTitle: true,
+              centerTitle: false,
               actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.free_breakfast,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    tooltip: "Get test BTC",
+                    onPressed: () {
+                      FlutterWebView flutterWebView = new FlutterWebView();
+                      flutterWebView.launch(
+                          'https://bitcoinfaucet.uo1.net/send.php',
+                          javaScriptEnabled: true,
+                          barColor: Colors.green,
+                          tintColor: Colors.white);
+                      flutterWebView.onToolbarAction.listen((identifier) {
+                        switch (identifier) {
+                          case 1:
+                            QRCodeController?.startScanning();
+                            flutterWebView.dismiss();
+                            break;
+                          case 2:
+                            break;
+                        }
+                      });
+                    },
+                  ),
+                ),
 //                Padding(
 //                  padding: const EdgeInsets.only(right: 15),
 //                  child: IconButton(
@@ -108,15 +147,26 @@ class _HomeState extends State<Home> {
                 Padding(
                   padding: const EdgeInsets.only(right: 15),
                   child: IconButton(
-                    icon: Icon(Icons.history, color: Colors.white),
+                    icon: Icon(Icons.history, color: Colors.white, size: 26,),
                     tooltip: "Settings",
                     onPressed: () {
-                      QRCodeController?.stopScanning();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Setting())).then((value) {
-                        QRCodeController?.startScanning();
+                      //QRCodeController?.stopScanning();
+                      FlutterWebView flutterWebView = new FlutterWebView();
+                      flutterWebView.launch(
+                          'https://live.blockcypher.com/btc-testnet/address/' +
+                              Static.publicAddress,
+                          javaScriptEnabled: false,
+                          barColor: Colors.green,
+                          tintColor: Colors.white);
+                      flutterWebView.onToolbarAction.listen((identifier) {
+                        switch (identifier) {
+                          case 1:
+                            QRCodeController?.startScanning();
+                            flutterWebView.dismiss();
+                            break;
+                          case 2:
+                            break;
+                        }
                       });
                     },
                   ),
@@ -124,7 +174,7 @@ class _HomeState extends State<Home> {
                 Padding(
                   padding: const EdgeInsets.only(right: 15),
                   child: IconButton(
-                    icon: Icon(TeneIcon.setting, color: Colors.white),
+                    icon: Icon(Icons.settings, color: Colors.white),
                     tooltip: "Settings",
                     onPressed: () {
                       QRCodeController?.stopScanning();

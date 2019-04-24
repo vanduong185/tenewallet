@@ -10,6 +10,8 @@ import 'package:tenewallet/config/AppConfig.dart';
 import 'dart:convert';
 import 'dart:core';
 import 'package:flutter_web_view/flutter_web_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:tenewallet/screens/Statics.dart';
 
 class BitCoinAPI {
   rng(int number) {
@@ -97,7 +99,8 @@ class BitCoinAPI {
     return prefs.getString('last_balance');
   }
 
-  Future<String> createTransaction(String recipent, double amount) async {
+  Future<String> createTransaction(
+      BuildContext context, String recipent, double amount) async {
     BitWalletInfo testwallet = generateTestNetAddress();
     print('test wif: ' + testwallet.wif);
     print('test address:' + testwallet.address);
@@ -127,45 +130,61 @@ class BitCoinAPI {
       http
           .post(AppConfig.BTC_TEST_NET3 + '/txs/new', body: json.encode(newtx))
           .then((http.Response response) {
-        var tx = jsonDecode(response.body);
-        final sender = ECPair.fromWIF(wallet.wif, network: NETWORKS.testnet);
-        final txb = new TransactionBuilder(network: NETWORKS.testnet);
+        print(response.body);
+        try {
+          var tx = jsonDecode(response.body);
+          final sender = ECPair.fromWIF(wallet.wif, network: NETWORKS.testnet);
+          final txb = new TransactionBuilder(network: NETWORKS.testnet);
+          print(resultAddr['txrefs'][0]['tx_output_n']);
+          txb.setVersion(2);
+          //txb.addInput(resultAddr['txrefs'][0]['tx_hash'], resultAddr['txrefs'][0]['tx_output_n']);
 
-        txb.setVersion(2);
-        txb.addInput(resultAddr['txrefs'][0]['tx_hash'], resultAddr['txrefs'][0]['tx_output_n']);
-        txb.addOutput(recipent, (amount * 100000000).round());
+          txb.addInput(tx['tx']['inputs'][0]['prev_hash'],
+              tx['tx']['inputs'][0]['output_index']);
+          txb.addOutput(recipent, (amount * 100000000).round());
 
-        txb.sign(0, sender);
-        String transactionHex = txb.build().toHex();
-        print(transactionHex);
-        var pushtx = {'tx': transactionHex};
-
-        http
-            .post(AppConfig.BTC_TEST_NET3 + '/txs/push',
-                body: json.encode(pushtx))
-            .then((http.Response res) {
-          var txResult = json.decode(res.body);
-          print(txResult);
-          FlutterWebView flutterWebView = new FlutterWebView();
-          flutterWebView.launch(
-              'https://live.blockcypher.com/btc-testnet/tx/' +
-                  txResult['tx']['hash'],
-              javaScriptEnabled: false,
-              toolbarActions: [
-                new ToolbarAction("Dismiss", 1),
-              ],
-              barColor: Colors.green,
-              tintColor: Colors.white);
-          flutterWebView.onToolbarAction.listen((identifier) {
-            switch (identifier) {
-              case 1:
-                flutterWebView.dismiss();
-                break;
-              case 2:
-                break;
-            }
+          txb.sign(0, sender);
+          String transactionHex = txb.build().toHex();
+          print(transactionHex);
+          var pushtx = {'tx': transactionHex};
+          http
+              .post(AppConfig.BTC_TEST_NET3 + '/txs/push',
+                  body: json.encode(pushtx))
+              .then((http.Response res) {
+            var txResult = json.decode(res.body);
+            print(txResult);
+            Static.isNeedUpdate = true;
+            Navigator.pop(context);
+            FlutterWebView flutterWebView = new FlutterWebView();
+            flutterWebView.launch(
+                'https://live.blockcypher.com/btc-testnet/tx/' +
+                    txResult['tx']['hash'],
+                javaScriptEnabled: false,
+                toolbarActions: [
+                  new ToolbarAction("Dismiss", 1),
+                ],
+                barColor: Colors.green,
+                tintColor: Colors.white);
+            flutterWebView.onToolbarAction.listen((identifier) {
+              switch (identifier) {
+                case 1:
+                  flutterWebView.dismiss();
+                  break;
+                case 2:
+                  break;
+              }
+            });
           });
-        });
+        } catch (err) {
+          Navigator.pop(context);
+          Fluttertoast.showToast(
+              msg:
+                  "An error happend , please make sure you have enough balance !!!",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIos: 1,
+              fontSize: 16.0);
+        }
       });
     });
   }

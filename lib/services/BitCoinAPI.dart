@@ -1,4 +1,5 @@
 import 'package:bitcoin_flutter/bitcoin_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:bitcoin_flutter/src/models/networks.dart' as NETWORKS;
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitcoin_flutter/src/payments/p2pkh.dart' show P2PKH, P2PKHData;
@@ -8,10 +9,12 @@ import 'package:http/http.dart' as http;
 import 'package:tenewallet/config/AppConfig.dart';
 import 'dart:convert';
 import 'dart:core';
+import 'package:flutter_web_view/flutter_web_view.dart';
 
 class BitCoinAPI {
-
-  rng (int number) { return utf8.encode('zzzzzzzzzzzzzzzzzzzzzzzzzzzzz431'); }
+  rng(int number) {
+    return utf8.encode('zzzzzzzzzzzzzzzzzzzzzzzzzzzzz431');
+  }
 
   //**
   // * Generate BTC testnet address
@@ -60,12 +63,12 @@ class BitCoinAPI {
     String address = prefs.getString('btc_wallet');
     String secret = prefs.getString('btc_secret');
     if (address == null || address == '' || secret == null) {
-      prefs.setString('btc_wallet', 'mtWJsvGESdwD1yGMYRpt28zQwvgUQcq11o');
+      prefs.setString('btc_wallet', 'mrbskbzf3A9qd7dcxSLxQWCp4jEnH5gu2y');
       prefs.setString(
-          'btc_secret', 'cRgnQe9MUu1JznntrLaoQpB476M8PURvXVQB5R2eqa7J863eV7wR');
+          'btc_secret', '91tdQT7rZ7daMvRrEh5Ti7AcrckFTfT1aQU5Ri1ACQTanp3oqPK');
       return new BitWalletInfo(
-          'cRgnQe9MUu1JznntrLaoQpB476M8PURvXVQB5R2eqa7J863eV7wR',
-          'mtWJsvGESdwD1yGMYRpt28zQwvgUQcq11o');
+          '91tdQT7rZ7daMvRrEh5Ti7AcrckFTfT1aQU5Ri1ACQTanp3oqPK',
+          'mrbskbzf3A9qd7dcxSLxQWCp4jEnH5gu2y');
     } else {
       return new BitWalletInfo(secret, address);
     }
@@ -81,8 +84,9 @@ class BitCoinAPI {
     if (response.statusCode == 200) {
       var result = json.decode(response.body);
       print('Balance: ' + (result['balance'] / 100000000).toString());
-      prefs.setString('last_balance', (result['balance'] / 100000000).toString());
-      return (result['balance'] / 100000000).toString() ;
+      prefs.setString(
+          'last_balance', (result['balance'] / 100000000).toString());
+      return (result['balance'] / 100000000).toString();
     } else {
       return prefs.getString('last_balance');
     }
@@ -94,42 +98,75 @@ class BitCoinAPI {
   }
 
   Future<String> createTransaction(String recipent, double amount) async {
-//    BitWalletInfo testwallet = generateTestNetAddress();
-//    print('test wif: ' + testwallet.wif);
-//    print('test address:' + testwallet.address);
+    BitWalletInfo testwallet = generateTestNetAddress();
+    print('test wif: ' + testwallet.wif);
+    print('test address:' + testwallet.address);
 
     BitWalletInfo wallet = await getWallet();
     print(wallet.address);
+    print(wallet.wif);
     var newtx = {
-      "inputs": [{"addresses": [wallet.address]}],
-      "outputs": [{"addresses": [recipent], "value": (amount * 100000000).round()}]
+      "inputs": [
+        {
+          "addresses": [wallet.address]
+        }
+      ],
+      "outputs": [
+        {
+          "addresses": [recipent],
+          "value": (amount * 100000000).round()
+        }
+      ]
     };
-    http.post(AppConfig.BTC_TEST_NET3 + '/txs/new', body: json.encode(newtx)).then((http.Response response) {
-      print('private key: ' + wallet.wif);
-      var tx = jsonDecode(response.body);
-      final sender = ECPair.fromWIF(wallet.wif, network: NETWORKS.testnet);
-      final txb = new TransactionBuilder(network: NETWORKS.testnet);
+    print(AppConfig.BTC_TEST_NET3 + '/addrs/' + wallet.address);
 
-      txb.setVersion(2);
-      print(tx['tx']['inputs'][0]['prev_hash']);
-      print('input: ' + tx['tx']['inputs'][0]['output_value'].toString());
-      print('output: ' + tx['tx']['outputs'][0]['value'].toString());
+    http
+        .get(AppConfig.BTC_TEST_NET3 + '/addrs/' + wallet.address)
+        .then((http.Response response) {
+      var resultAddr = json.decode(response.body);
+      http
+          .post(AppConfig.BTC_TEST_NET3 + '/txs/new', body: json.encode(newtx))
+          .then((http.Response response) {
+        var tx = jsonDecode(response.body);
+        final sender = ECPair.fromWIF(wallet.wif, network: NETWORKS.testnet);
+        final txb = new TransactionBuilder(network: NETWORKS.testnet);
 
-      txb.addInput(tx['tx']['inputs'][0]['prev_hash'], 0);
-      txb.addOutput(recipent, tx['tx']['outputs'][0]['value']);
-      // (in)15000 - (out)12000 = (fee)3000, this is the miner fee
+        txb.setVersion(2);
+        txb.addInput(resultAddr['txrefs'][0]['tx_hash'], resultAddr['txrefs'][0]['tx_output_n']);
+        txb.addOutput(recipent, (amount * 100000000).round());
 
-      txb.sign(0, sender);
-      String transactionHex = txb.build().toHex();
-      var pushtx = {
-        'tx': transactionHex
-      };
-      http.post(AppConfig.BTC_TEST_NET3 + '/txs/push', body: json.encode(pushtx)).then((http.Response res) {
-        print(res.body);
-        var txResult = json.decode(res.body);
-        return txResult['tx']['hash'];
+        txb.sign(0, sender);
+        String transactionHex = txb.build().toHex();
+        print(transactionHex);
+        var pushtx = {'tx': transactionHex};
+
+        http
+            .post(AppConfig.BTC_TEST_NET3 + '/txs/push',
+                body: json.encode(pushtx))
+            .then((http.Response res) {
+          var txResult = json.decode(res.body);
+          print(txResult);
+          FlutterWebView flutterWebView = new FlutterWebView();
+          flutterWebView.launch(
+              'https://live.blockcypher.com/btc-testnet/tx/' +
+                  txResult['tx']['hash'],
+              javaScriptEnabled: false,
+              toolbarActions: [
+                new ToolbarAction("Dismiss", 1),
+              ],
+              barColor: Colors.green,
+              tintColor: Colors.white);
+          flutterWebView.onToolbarAction.listen((identifier) {
+            switch (identifier) {
+              case 1:
+                flutterWebView.dismiss();
+                break;
+              case 2:
+                break;
+            }
+          });
+        });
       });
     });
   }
-
 }

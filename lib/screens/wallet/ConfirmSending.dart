@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tenewallet/screens/Statics.dart';
 import 'package:tenewallet/services/BitCoinAPI.dart';
-import 'package:tenewallet/screens/transaction/TransactionDetails.dart';
+
 
 class ConfirmSendingPage extends StatefulWidget {
   var _transaction;
@@ -240,16 +240,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                   BitCoinAPI()
                       .createTransaction(
                           transaction["recipent_address"].toString(),
-                          double.parse(transaction['sent_crypto_amount']))
-                      .then((onvalue) {
-                        print(onvalue);
-                    String url = onvalue;
-//                    Navigator.pushReplacement(
-//                        context,
-//                        MaterialPageRoute(
-//                            builder: (context) =>
-//                                new TransactionDetail(url: 'https://live.blockcypher.com/btc-testnet/tx/',)));
-                  });
+                          double.parse(transaction['sent_crypto_amount']));
                 },
               )
             ],

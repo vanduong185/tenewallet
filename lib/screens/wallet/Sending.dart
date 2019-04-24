@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import "package:qrcode_reader/qrcode_reader.dart";
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tenewallet/screens/wallet/ConfirmSending.dart';
 import 'package:tenewallet/services/BitCoinAPI.dart';
@@ -62,8 +61,6 @@ class _SendingPageState extends State<SendingPage> {
         this.crypto["balance"] = onValue;
       });
     });
-
-    print('price:' + Static.sBtcPrice.toString());
   }
 
   @override
@@ -172,7 +169,6 @@ class _SendingPageState extends State<SendingPage> {
 //                        })
 //                      },
                       onChanged: (text) {
-                        print(text);
                         setState(() {
                           this.recipentAddress = text;
                         });
@@ -180,7 +176,7 @@ class _SendingPageState extends State<SendingPage> {
                       decoration: InputDecoration(
                           suffixIcon: GestureDetector(
                         child: Icon(
-                          FontAwesomeIcons.qrcode,
+                          Icons.monetization_on,
                           color: Colors.black54,
                         ),
                         onTap: () {
@@ -216,7 +212,6 @@ class _SendingPageState extends State<SendingPage> {
 //                        })
 //                      },
                       onChanged: (number) {
-                        print(number);
                         setState(() {
                           sentAmount = number;
 //                          if (double.parse(sentAmount) > double.parse(crypto['balance'])) {

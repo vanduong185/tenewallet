@@ -32,7 +32,7 @@ class _EnterPasscodeState extends State<EnterPasscode> {
       maxLength: 4,
       maskCharacter: "●",
       hasError: hasError,
-      onTextChanged: (text) {
+      onDone: (text) {
         if (text == widget.passcode) {
           setState(() {
             hasError = false;
@@ -43,21 +43,19 @@ class _EnterPasscodeState extends State<EnterPasscode> {
           );
         }
         else {
-          if (text.length == 4) {
-            setState(() {
-                //hasError = true;
-                Fluttertoast.showToast(
-                  msg: "Your passcode doesn't match.",
-                  backgroundColor: Colors.red[400],
-                  textColor: Colors.white,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIos: 1,
-                  fontSize: 14
-                );
-                index++;
-                listPin.add(generateNewPin());
-            });
-          }
+          setState(() {
+            //hasError = true;
+            Fluttertoast.showToast(
+                msg: "Your passcode doesn't match.",
+                backgroundColor: Colors.red[400],
+                textColor: Colors.white,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIos: 1,
+                fontSize: 14
+            );
+            index++;
+            listPin.add(generateNewPin());
+          });
         }
       },
       pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType
@@ -81,7 +79,9 @@ class _EnterPasscodeState extends State<EnterPasscode> {
   }
 
   Widget renderPincode() {
-    return listPin[index];
+    if (listPin.length > 0) {
+      return listPin[index];
+    }
   }
 
   @override

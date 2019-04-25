@@ -19,9 +19,9 @@ class _EnterPasscodeState extends State<EnterPasscode> {
   int index;
   PinCodeTextField pin;
 
-  PinCodeTextField generateNewPin (int i) {
+  PinCodeTextField generateNewPin () {
     return new PinCodeTextField(
-      key: Key(i.toString()),
+      key: Key(index.toString()),
       autofocus: true,
       controller: new TextEditingController(),
       hideCharacter: true,
@@ -54,8 +54,8 @@ class _EnterPasscodeState extends State<EnterPasscode> {
                   timeInSecForIos: 1,
                   fontSize: 14
                 );
-                index = i + 1;
-                listPin.add(generateNewPin(index));
+                index++;
+                listPin.add(generateNewPin());
             });
           }
         }
@@ -77,7 +77,7 @@ class _EnterPasscodeState extends State<EnterPasscode> {
     hasError = false;
     index = 0;
     listPin = [];
-    listPin.add(generateNewPin(index));
+    listPin.add(generateNewPin());
   }
 
   Widget renderPincode() {

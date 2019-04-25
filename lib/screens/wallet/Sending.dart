@@ -191,7 +191,7 @@ class _SendingPageState extends State<SendingPage> {
                       ),
                       TextField(
                         controller: eCtrl2,
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.numberWithOptions(decimal: true),
 //                      onSubmitted: (number) => {
 //                        setState(() {
 //                          this.sent_crypto_amount = number;

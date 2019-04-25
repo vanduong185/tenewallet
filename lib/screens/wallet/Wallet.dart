@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tenewallet/screens/wallet/transaction.dart';
-import 'package:tenewallet/screens/wallet/sending.dart';
+import 'package:tenewallet/screens/wallet/Transaction.dart';
+import 'package:tenewallet/screens/wallet/Sending.dart';
 
 class WalletPage extends StatefulWidget {
   @override

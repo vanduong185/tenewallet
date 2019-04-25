@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:tenewallet/screens/Statics.dart';
 import 'package:tenewallet/screens/market/market.dart';
 import 'package:tenewallet/services/network.dart';
 import 'package:tenewallet/services/BitCoinAPI.dart';
+import 'dart:async';
 
 class CoinInfor extends StatefulWidget {
   QRReaderController QRCodeController;
@@ -16,14 +17,14 @@ class CoinInfor extends StatefulWidget {
   _CoinInforState createState() => _CoinInforState();
 }
 
-class _CoinInforState extends State<CoinInfor> {
+class _CoinInforState extends State<CoinInfor> with WidgetsBindingObserver, RouteAware {
   var coin = {
     "name": "BTC",
-    "value": "15454421",
-    "lastest_price": "4,5562",
-    "change": "2.233",
-    "trend": "up"
+    "currentPrice": "",
+    "isUp": false,
+    "percentChange": 1.0,
   };
+
   String balance = '';
   String currentPrice = '';
   bool isLoading;
@@ -31,14 +32,17 @@ class _CoinInforState extends State<CoinInfor> {
   bool isUp = false;
   double percentChange;
 
-  @override
-  void initState() {
-    super.initState();
-
+  doInit() {
     isLoading = true;
+    BitCoinAPI().getBalance().then((onValue) {
+      setState(() {
+        balance = onValue;
+        Static.balance = balance;
+      });
+    });
+
     Network network = new Network();
     network.getCoin7Days().then((data) {
-      print(data.toString());
       setState(() {
         coinPriceSeries = data;
 
@@ -48,6 +52,7 @@ class _CoinInforState extends State<CoinInfor> {
         }).toList();
 
         currentPrice = b[b.length - 1].toString();
+        Static.sBtcPrice = double.parse(currentPrice);
         isLoading = false;
         double start = b[0];
         double end = b[b.length - 1];
@@ -60,12 +65,42 @@ class _CoinInforState extends State<CoinInfor> {
         percentChange = (temp.abs() / start * 100).floorToDouble();
       });
     });
-    BitCoinAPI().getBalance().then((onValue) {
-      setState(() {
-        balance = onValue;
-      });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    doInit();
+    // runs every 1 second
+    Timer.periodic(new Duration(seconds: 10), (timer) {
+      if (Static.isNeedUpdate) {
+        BitCoinAPI().getBalance().then((onValue) {
+          setState(() {
+            balance = onValue;
+            Static.balance = balance;
+          });
+        });
+        Static.isNeedUpdate = false;
+      }
     });
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      doInit();
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +226,7 @@ class _CoinInforState extends State<CoinInfor> {
                     child: Sparkline(
                       sharpCorners: false,
                       data: coinPriceSeries.map((coinPrice) {
-                        double highPrice = coinPrice["high"].toDouble();
+                        double highPrice = double.parse(coinPrice["high"].toString());
                         return highPrice;
                       }).toList(),
                       lineColor: Color(0xFFA9DFF1),

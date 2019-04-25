@@ -109,9 +109,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:tenewallet/screens/wallet/sending.dart';
+import 'package:tenewallet/screens/wallet/Sending.dart';
 
 class ScanQRCode extends StatefulWidget {
   var crypto;

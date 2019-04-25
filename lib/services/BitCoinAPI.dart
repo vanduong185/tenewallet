@@ -1,4 +1,5 @@
 import 'package:bitcoin_flutter/bitcoin_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:bitcoin_flutter/src/models/networks.dart' as NETWORKS;
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitcoin_flutter/src/payments/p2pkh.dart' show P2PKH, P2PKHData;
@@ -8,11 +9,13 @@ import 'package:http/http.dart' as http;
 import 'package:tenewallet/config/AppConfig.dart';
 import 'dart:convert';
 import 'dart:core';
+import 'package:flutter_web_view/flutter_web_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:tenewallet/screens/Statics.dart';
 
 class BitCoinAPI {
-
   rng(int number) {
-    return 1;
+    return utf8.encode('zzzzzzzzzzzzzzzzzzzzzzzzzzzzz431');
   }
 
   //**
@@ -62,12 +65,12 @@ class BitCoinAPI {
     String address = prefs.getString('btc_wallet');
     String secret = prefs.getString('btc_secret');
     if (address == null || address == '' || secret == null) {
-      prefs.setString('btc_wallet', 'mkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt');
+      prefs.setString('btc_wallet', 'mrbskbzf3A9qd7dcxSLxQWCp4jEnH5gu2y');
       prefs.setString(
-          'btc_secret', 'cRgnQe9MUu1JznntrLaoQpB476M8PURvXVQB5R2eqms5tXnzNsrr');
+          'btc_secret', '91tdQT7rZ7daMvRrEh5Ti7AcrckFTfT1aQU5Ri1ACQTanp3oqPK');
       return new BitWalletInfo(
-          'cRgnQe9MUu1JznntrLaoQpB476M8PURvXVQB5R2eqms5tXnzNsrr',
-          'mkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt');
+          '91tdQT7rZ7daMvRrEh5Ti7AcrckFTfT1aQU5Ri1ACQTanp3oqPK',
+          'mrbskbzf3A9qd7dcxSLxQWCp4jEnH5gu2y');
     } else {
       return new BitWalletInfo(secret, address);
     }
@@ -83,11 +86,106 @@ class BitCoinAPI {
     if (response.statusCode == 200) {
       var result = json.decode(response.body);
       print('Balance: ' + (result['balance'] / 100000000).toString());
-      prefs.setString('last_balance', (result['balance'] / 100000000).toString());
-      return (result['balance'] / 100000000).toString() ;
+      prefs.setString(
+          'last_balance', (result['balance'] / 100000000).toString());
+      return (result['balance'] / 100000000).toString();
     } else {
       return prefs.getString('last_balance');
     }
   }
 
+  Future<String> getBalanceOffline() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('last_balance');
+  }
+
+  Future<String> createTransaction(
+      BuildContext context, String recipent, double amount) async {
+    BitWalletInfo testwallet = generateTestNetAddress();
+    print('test wif: ' + testwallet.wif);
+    print('test address:' + testwallet.address);
+
+    BitWalletInfo wallet = await getWallet();
+    print(wallet.address);
+    print(wallet.wif);
+    var newtx = {
+      "inputs": [
+        {
+          "addresses": [wallet.address]
+        }
+      ],
+      "outputs": [
+        {
+          "addresses": [recipent],
+          "value": (amount * 100000000).round()
+        }
+      ]
+    };
+    print(AppConfig.BTC_TEST_NET3 + '/addrs/' + wallet.address);
+
+    http
+        .get(AppConfig.BTC_TEST_NET3 + '/addrs/' + wallet.address)
+        .then((http.Response response) {
+      var resultAddr = json.decode(response.body);
+      http
+          .post(AppConfig.BTC_TEST_NET3 + '/txs/new', body: json.encode(newtx))
+          .then((http.Response response) {
+        print(response.body);
+        try {
+          var tx = jsonDecode(response.body);
+          final sender = ECPair.fromWIF(wallet.wif, network: NETWORKS.testnet);
+          final txb = new TransactionBuilder(network: NETWORKS.testnet);
+          print(resultAddr['txrefs'][0]['tx_output_n']);
+          txb.setVersion(2);
+          //txb.addInput(resultAddr['txrefs'][0]['tx_hash'], resultAddr['txrefs'][0]['tx_output_n']);
+
+          txb.addInput(tx['tx']['inputs'][0]['prev_hash'],
+              tx['tx']['inputs'][0]['output_index']);
+          txb.addOutput(recipent, (amount * 100000000).round());
+
+          txb.sign(0, sender);
+          String transactionHex = txb.build().toHex();
+          print(transactionHex);
+          var pushtx = {'tx': transactionHex};
+          http
+              .post(AppConfig.BTC_TEST_NET3 + '/txs/push',
+                  body: json.encode(pushtx))
+              .then((http.Response res) {
+            var txResult = json.decode(res.body);
+            print(txResult);
+            Static.isNeedUpdate = true;
+            Navigator.pop(context);
+            FlutterWebView flutterWebView = new FlutterWebView();
+            flutterWebView.launch(
+                'https://live.blockcypher.com/btc-testnet/tx/' +
+                    txResult['tx']['hash'],
+                javaScriptEnabled: false,
+                toolbarActions: [
+                  new ToolbarAction("Dismiss", 1),
+                ],
+                barColor: Colors.green,
+                tintColor: Colors.white);
+            flutterWebView.onToolbarAction.listen((identifier) {
+              switch (identifier) {
+                case 1:
+                  flutterWebView.dismiss();
+                  break;
+                case 2:
+                  break;
+              }
+            });
+          });
+        } catch (err) {
+          Navigator.pop(context);
+          Fluttertoast.showToast(
+              msg:
+                  "An error happend , please make sure you have enough balance !!!",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIos: 1,
+              fontSize: 16.0);
+        }
+      });
+    });
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:tenewallet/screens/index.dart';
 
@@ -45,6 +46,14 @@ class _EnterPasscodeState extends State<EnterPasscode> {
           if (text.length == 4) {
             setState(() {
                 //hasError = true;
+                Fluttertoast.showToast(
+                  msg: "Your passcode doesn't match.",
+                  backgroundColor: Colors.red[400],
+                  textColor: Colors.white,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIos: 1,
+                  fontSize: 14
+                );
                 index = i + 1;
                 listPin.add(generateNewPin(index));
             });
@@ -72,8 +81,6 @@ class _EnterPasscodeState extends State<EnterPasscode> {
   }
 
   Widget renderPincode() {
-    print(index);
-    print(listPin[index]);
     return listPin[index];
   }
 

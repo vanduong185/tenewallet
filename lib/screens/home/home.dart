@@ -15,7 +15,7 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver{
   var crypto = {"name": "Bitcoin", "amount": "5.00", "recipent_address": null};
 
   String title;
@@ -28,6 +28,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     title = "Receive";
 
@@ -75,9 +76,43 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    print("dispose");
     QRCodeController?.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      if (state == AppLifecycleState.inactive) {
+        QRCodeController?.dispose();
+      }
+
+      if (state == AppLifecycleState.resumed) {
+        availableCameras().then((list_camera) {
+          QRCodeController = new QRReaderController(
+              list_camera[0], ResolutionPreset.medium, [CodeFormat.qr],
+                  (dynamic value) {
+                crypto["recipent_address"] = value;
+                QRCodeController.stopScanning();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SendingPage(crypto)))
+                    .then((_) {
+                  QRCodeController.startScanning();
+                });
+              });
+
+          QRCodeController.initialize().then((_) {
+            if (!mounted)
+              return;
+            else {
+              setState(() {});
+              QRCodeController.startScanning();
+            }
+          });
+        });
+      }
+    });
   }
 
   @override

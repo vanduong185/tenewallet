@@ -17,6 +17,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
   var transaction;
   var from;
   var to;
+  var amount;
 
   TextEditingController tCtrl = new TextEditingController();
 
@@ -72,39 +73,29 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                             )
                           ]
                         ),
-                        child: Image.asset("image/bitcoin.png", height: 60),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Icon(
+                            Icons.account_balance_wallet,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                     Column(
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Icon(
-                              Icons.attach_money,
-                              color: Color(0xFF1980BA),
-                              size: 20,
-                            ),
                             Text(
-                              "4000",
+                              "Balance: 4000 ฿",
                               style: TextStyle(
                                   color: Color(0xFF1980BA),
                                   fontSize: 36,
-                                  fontWeight: FontWeight.w500),
+                                  fontWeight: FontWeight.w300),
                             )
                           ],
                           mainAxisAlignment: MainAxisAlignment.center,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Text(
-                              "0.9BTC",
-                              style: TextStyle(
-                                  color: Color(0XFF4AB7E0),
-                                  fontSize: 22,
-                                  ),
-                            ),
-                          ],
-                          mainAxisAlignment: MainAxisAlignment.start,
                         )
                       ],
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,6 +145,7 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                     ),
                     TextField(
                       controller: tCtrl,
+                      enabled: false,
                       onSubmitted: (text) => {
                         setState(() {
                           this.to = text;
@@ -189,8 +181,8 @@ class _ConfirmSendingPageSate extends State<ConfirmSendingPage> {
                         padding: const EdgeInsets.only(bottom: 20),
                         child: Row(
                           children: <Widget>[
-                            Text("Max Total", style: TextStyle(color: Color(0xFF1980BA), fontSize: 18, fontWeight: FontWeight.w400)),
-                            Text("8.156 USD", style: TextStyle(fontSize: 18, color: Color(0xFF333333), fontFamily: String.fromEnvironment("Montserrat")))
+                            Text("Amount", style: TextStyle(color: Color(0xFF1980BA), fontSize: 18, fontWeight: FontWeight.w400)),
+                            Text(transaction['sent_crypto_amount'] + ' BTC ', style: TextStyle(fontSize: 18, color: Color(0xFF333333), fontFamily: String.fromEnvironment("Montserrat")))
                           ],
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         ),

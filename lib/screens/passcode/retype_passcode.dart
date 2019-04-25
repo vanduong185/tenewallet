@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 
 import 'package:tenewallet/screens/index.dart';
-import 'package:tenewallet/models/passcode.dart';
+import 'package:tenewallet/models/PassCodeInfo.dart';
 
 class RetypePin extends StatefulWidget {
   String passcode;

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>655449755555-gbko0u5h6m0rau1sv251a7jt2j5bclkm.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.655449755555-gbko0u5h6m0rau1sv251a7jt2j5bclkm</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCvZNW9Hi5m8nXCZ1IKp7sFAOOERxyBq_0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>655449755555</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.tenewallet</string>
+	<key>PROJECT_ID</key>
+	<string>cryptoserver-97e9a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cryptoserver-97e9a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:655449755555:ios:ed34687386a9e5ef</string>
+	<key>DATABASE_URL</key>
+	<string>https://cryptoserver-97e9a.firebaseio.com</string>
+</dict>
+</plist>

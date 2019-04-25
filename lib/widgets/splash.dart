@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:tenewallet/screens/passcode/enter_passcode.dart';
 import 'package:tenewallet/screens/passcode/create_passcode.dart';
 import 'package:tenewallet/screens/index.dart';
-import 'package:tenewallet/models/passcode.dart';
+import 'package:tenewallet/models/PassCodeInfo.dart';
 import 'package:tenewallet/widgets/background.dart';
 
 class Splash extends StatefulWidget {
@@ -36,7 +36,7 @@ class _SplashState extends State<Splash> {
   redirect() async {
     await getPasscode();
 
-    var duration = new Duration(seconds: 2);
+    var duration = new Duration(seconds: 0);
 
     return new Timer(duration, () {
       if (passcode == null) {
@@ -60,7 +60,6 @@ class _SplashState extends State<Splash> {
   @override
   initState()  {
     super.initState();
-
     redirect();
   }
 

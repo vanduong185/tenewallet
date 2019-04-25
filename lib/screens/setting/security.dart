@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 
 
-import 'package:tenewallet/models/passcode.dart';
+import 'package:tenewallet/models/PassCodeInfo.dart';
 import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class SecuritySetting extends StatefulWidget {

@@ -5,7 +5,8 @@ import 'package:tenewallet/screens/market/coin_chart.dart';
 import 'package:tenewallet/screens/market/coin_details.dart';
 import 'package:tenewallet/screens/market/coin_brief_infor.dart';
 import 'package:tenewallet/screens/setting/setting.dart';
-import 'package:tenewallet/models/coin.dart';
+import 'package:tenewallet/models/CoinInfo.dart';
+
 import "package:tenewallet/widgets/background.dart";
 import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
@@ -26,21 +27,25 @@ class _MarketState extends State<Market> {
 
   getData() {
     Firestore.instance.collection("coinlist").snapshots().listen((data) {
-      var doc = data.documents[0].data;
-      coin = new Coin();
-      setState(() {
-        coin.id = doc["id"];
-        coin.marketCapUSD = doc["marketCapUSD"];
-        coin.img = doc["img"];
-        coin.name = doc["name"];
-        coin.priceChange1H = doc["priceChange1H"];
-        coin.priceChange24H = doc["priceChange24H"];
-        coin.priceChange7D = doc["priceChange7D"];
-        coin.priceUSD = doc["priceUSD"];
-        coin.rank = doc["rank"];
-        coin.symbolText = doc["symbolText"];
-        coin.volumeUSD = doc["volumeUSD"];
+      if (data.documents.length > 0) {
+        var doc = data.documents[0].data;
+        coin = new Coin();
+        setState(() {
+          coin.id = doc["id"];
+          coin.marketCapUSD = doc["marketCapUSD"];
+          coin.img = doc["img"];
+          coin.name = doc["name"];
+          coin.priceChange1H = doc["priceChange1H"];
+          coin.priceChange24H = doc["priceChange24H"];
+          coin.priceChange7D = doc["priceChange7D"];
+          coin.priceUSD = doc["priceUSD"];
+          coin.rank = doc["rank"];
+          coin.symbolText = doc["symbolText"];
+          coin.volumeUSD = doc["volumeUSD"];
+        });
+      }
 
+      setState(() {
         isLoading = false;
       });
     });

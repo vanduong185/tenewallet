@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import "package:qrcode_reader/qrcode_reader.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tenewallet/screens/wallet/confirm_sending.dart';
+import 'package:tenewallet/services/BitCoinAPI.dart';
 
-class  SendingPage extends StatefulWidget {
+class SendingPage extends StatefulWidget {
   var _crypto;
 
   SendingPage(this._crypto);
 
   @override
   _SendingPageState createState() {
-
     return _SendingPageState(_crypto);
   }
 }
@@ -29,7 +29,13 @@ class _SendingPageState extends State<SendingPage> {
   }
 
   openQrReader() {
-    Future<String> futureString = new QRCodeReader().setAutoFocusIntervalInMs(200).setForceAutoFocus(true).setTorchEnabled(true).setHandlePermissions(true).setExecuteAfterPermissionGranted(true).scan();
+    Future<String> futureString = new QRCodeReader()
+        .setAutoFocusIntervalInMs(200)
+        .setForceAutoFocus(true)
+        .setTorchEnabled(true)
+        .setHandlePermissions(true)
+        .setExecuteAfterPermissionGranted(true)
+        .scan();
     futureString.then((string) {
       setState(() {
         eCtrl1.text = string;
@@ -58,23 +64,31 @@ class _SendingPageState extends State<SendingPage> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.white,
-        title: Text("Input", style: TextStyle(color: Color(0xFF1980BA), fontSize: 20),),
-        elevation: 0,
-        iconTheme: IconThemeData(
-          color: Color(0xFF1980BA)
+        title: Text(
+          "Input",
+          style: TextStyle(color: Color(0xFF1980BA), fontSize: 20),
         ),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Color(0xFF1980BA)),
         bottom: PreferredSize(
           child: Container(
             height: 1,
             color: Color(0xFF1980BA),
-          ), preferredSize: null,
+          ),
+          preferredSize: null,
         ),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: GestureDetector(
               child: Center(
-                child: Text("NEXT", style: TextStyle( color: Color(0xFF1980BA), fontSize: 18, fontWeight: FontWeight.w400),),
+                child: Text(
+                  "NEXT",
+                  style: TextStyle(
+                      color: Color(0xFF1980BA),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400),
+                ),
               ),
               onTap: () {
                 if (recipent_address != null && sent_crypto_amount != null) {
@@ -86,105 +100,166 @@ class _SendingPageState extends State<SendingPage> {
 
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ConfirmSendingPage(transaction))
-                    );
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ConfirmSendingPage(transaction)));
                   }
+                } else {
+                  Fluttertoast.showToast(
+                      msg: "Please enter valid address and amount !!!",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIos: 1,
+                      fontSize: 16.0);
                 }
               },
             ),
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 50),
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Text("Recipent address", style: TextStyle(color: Color(0xFF1980BA), fontSize: 16, fontWeight: FontWeight.w500),)
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.start,
-                    ),
-                    TextField(
-                      controller: eCtrl1,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 50),
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            "Recipent address",
+                            style: TextStyle(
+                                color: Color(0xFF1980BA),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500),
+                          )
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.start,
+                      ),
+                      TextField(
+                        controller: eCtrl1,
 //                      onSubmitted: (text) => {
 //                        setState(() {
 //                          this.recipent_address = text;
 //                        })
 //                      },
-                      onChanged: (text) {
-                        print(text);
-                        setState(() {
-                          this.recipent_address = text;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        suffixIcon: GestureDetector(
-                          child: Icon(FontAwesomeIcons.qrcode, color: Colors.black54,),
-                          onTap: () {
-                            //this.openQrReader();
-                          },
-                        )
-                      ),
-                    )
-                  ],
+                        onChanged: (text) {
+                          print(text);
+                          setState(() {
+                            this.recipent_address = text;
+                          });
+                        },
+                        decoration: InputDecoration(
+                            suffixIcon: GestureDetector(
+                              child: Icon(
+                                FontAwesomeIcons.qrcode,
+                                color: Colors.black54,
+                              ),
+                              onTap: () {
+                                //this.openQrReader();
+                              },
+                            )),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30),
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Text(crypto["name"], style: TextStyle(color: Color(0xFF1980BA), fontSize: 16, fontWeight: FontWeight.w500))
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.start,
-                    ),
-                    TextField(
-                      controller: eCtrl2,
-                      keyboardType: TextInputType.number,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Text(crypto["name"],
+                              style: TextStyle(
+                                  color: Color(0xFF1980BA),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500))
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.start,
+                      ),
+                      TextField(
+                        controller: eCtrl2,
+                        keyboardType: TextInputType.number,
 //                      onSubmitted: (number) => {
 //                        setState(() {
 //                          this.sent_crypto_amount = number;
 //                        })
 //                      },
-                      onChanged: (number) {
+                        onChanged: (number) {
                           print(number);
-                        setState(() {
-                          this.sent_crypto_amount = number;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        suffixIcon: GestureDetector(
-                          child: Column(
-                            children: <Widget>[
-                              Text("MAX", style: TextStyle(color: Colors.black54, fontSize: 14),)
-                            ],
-                            mainAxisAlignment: MainAxisAlignment.center,
-                          ),
-                          onTap: () {
-                            setState(() {
-                              eCtrl2.text = crypto["amount"];
-                              sent_crypto_amount = crypto["amount"];
-                            });
-                          },
-                        )
-                      ),
-                    )
-                  ],
+                          setState(() {
+                            this.sent_crypto_amount = number;
+                          });
+                        },
+                        decoration: InputDecoration(
+                            suffixIcon: GestureDetector(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    "MAX",
+                                    style: TextStyle(
+                                        color: Colors.black54, fontSize: 14),
+                                  )
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  eCtrl2.text = crypto["amount"];
+                                  sent_crypto_amount = crypto["amount"];
+                                });
+                              },
+                            )),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            )
-          ],
+              Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: <Widget>[
+                          Text('Estimate value : ',
+                              style: TextStyle(
+                                  color: Color(0xFF1980BA),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500)),
+                          Text('~ 100 \$',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500)),
+                        ],
+                      ))),
+              Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: <Widget>[
+                          Text('Estimate network fee : ',
+                              style: TextStyle(
+                                  color: Color(0xFF1980BA),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500)),
+                          Text('~ 100 \$',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500)),
+                        ],
+                      )))
+            ],
+          ),
         ),
-      ),
+      )
     );
   }
 }

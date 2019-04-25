@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:tenewallet/screens/market/market.dart';
 import 'package:tenewallet/services/network.dart';
-import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
+import 'package:tenewallet/services/BitCoinAPI.dart';
 
 class CoinInfor extends StatefulWidget {
   QRReaderController QRCodeController;
@@ -25,9 +24,12 @@ class _CoinInforState extends State<CoinInfor> {
     "change": "2.233",
     "trend": "up"
   };
-
+  String balance = '';
+  String currentPrice = '';
   bool isLoading;
   List coinPriceSeries;
+  bool isUp = false;
+  double percentChange;
 
   @override
   void initState() {
@@ -36,17 +38,31 @@ class _CoinInforState extends State<CoinInfor> {
     isLoading = true;
     Network network = new Network();
     network.getCoin7Days().then((data) {
-      //print(data);
-
+      print(data.toString());
       setState(() {
         coinPriceSeries = data;
-        List<double> a = data.map((e) {
-          double b = e["high"];
-          return b;
+
+        List<double> b = data.map((e) {
+          double x = e["close"];
+          return x;
         }).toList();
 
-        print(a);
+        currentPrice = b[b.length - 1].toString();
         isLoading = false;
+        double start = b[0];
+        double end = b[b.length - 1];
+        double temp = start - end;
+        if (temp < 0) {
+          isUp = true;
+        } else {
+          isUp = false;
+        }
+        percentChange = (temp.abs() / start * 100).floorToDouble();
+      });
+    });
+    BitCoinAPI().getBalance().then((onValue) {
+      setState(() {
+        balance = onValue;
       });
     });
   }
@@ -56,14 +72,11 @@ class _CoinInforState extends State<CoinInfor> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: Container(
-        height: 80,
-        child: Row(
+        height: 120,
+        child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: renderCoinInfo(),
-            ),
-            renderCoinSparkline()
+            renderCoinInfo(),
+            renderCoinSparkline(),
           ],
         ),
       ),
@@ -73,17 +86,12 @@ class _CoinInforState extends State<CoinInfor> {
   Widget renderCoinInfo() {
     return Row(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: Image.asset("image/bitcoin.png", height: 60),
-        ),
         GestureDetector(
           onTap: () {
             widget.QRCodeController?.stopScanning();
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Market(coin))
-            ).then((_) {
+            Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Market(coin)))
+                .then((_) {
               widget.QRCodeController?.startScanning();
             });
           },
@@ -91,43 +99,27 @@ class _CoinInforState extends State<CoinInfor> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Icon(
-                    Icons.attach_money,
-                    color: Colors.white,
-                    size: 20,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Icon(
+                        Icons.account_balance_wallet,
+                        size: 28,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                   Text(
-                    "4000",
+                    'Balance: ' + balance + ' ฿',
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.w500),
-                  )
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400),
+                  ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
-              Row(
-                children: <Widget>[
-                  Text(
-                    "0.9BTC",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w200),
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_up,
-                    size: 18,
-                    color: Color(0xFF8BEB4D),
-                  ),
-                  Text(
-                    "12%",
-                    style:
-                    TextStyle(fontSize: 18, color: Color(0xFF8BEB4D)),
-                  )
-                ],
-                mainAxisAlignment: MainAxisAlignment.start,
-              )
             ],
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,25 +132,79 @@ class _CoinInforState extends State<CoinInfor> {
   Widget renderCoinSparkline() {
     if (isLoading) {
       return Expanded(
-        child: Center(child: CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFA9DFF1)))
-        ),
-      );
-    }
-    else {
-      return Expanded(
         child: Center(
-          child: Sparkline(
-            data: coinPriceSeries.map((coinPrice) {
-              double highPrice = coinPrice["high"];
-              return highPrice;
-            }).toList(),
-            lineColor: Color(0xFFA9DFF1),
-            pointsMode: PointsMode.all,
-            pointColor: Colors.white,
-          ),
-        ),
+            child: CircularProgressIndicator(
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(Color(0xFFA9DFF1)))),
       );
+    } else {
+      return
+        GestureDetector(
+          onTap: () {
+            widget.QRCodeController?.stopScanning();
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => Market(coin)))
+                .then((_) {
+              widget.QRCodeController?.startScanning();
+            });
+          },
+          child: Container(
+            margin: EdgeInsets.only(right: 25, top: 15),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Icon(
+                      Icons.monetization_on,
+                      size: 24,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Text(
+                  'Price: ' + currentPrice + ' \$  ',
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 21, fontWeight: FontWeight.w300),
+                ),
+                isUp ? Icon(
+                  Icons.trending_up,
+                  size: 24,
+                  color: Colors.greenAccent,
+                ) : Icon(
+                  Icons.trending_down,
+                  size: 24,
+                  color: Colors.redAccent,
+                ),
+                isUp ? Text(
+                  ' ' + percentChange.toString() + '%   ',
+                  style: TextStyle(fontSize: 18, color: Colors.greenAccent),
+                ) : Text(
+                  ' ' + percentChange.toString() + '%   ',
+                  style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                ),
+                Expanded(
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    child: Sparkline(
+                      sharpCorners: false,
+                      data: coinPriceSeries.map((coinPrice) {
+                        double highPrice = coinPrice["high"].toDouble();
+                        return highPrice;
+                      }).toList(),
+                      lineColor: Color(0xFFA9DFF1),
+                      pointsMode: PointsMode.all,
+                      pointColor: Colors.white,
+                    ),
+                  ),
+                )
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
+          )
+        );
     }
   }
 }

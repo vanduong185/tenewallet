@@ -12,10 +12,12 @@ import 'dart:core';
 import 'package:flutter_web_view/flutter_web_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tenewallet/screens/Statics.dart';
+import 'package:random_string/random_string.dart';
+
 
 class BitCoinAPI {
   rng(int number) {
-    return utf8.encode('zzzzzzzzzzzzzzzzzzzzzzzzzzzzz431');
+    return utf8.encode(randomString(32));
   }
 
   //**
@@ -63,16 +65,16 @@ class BitCoinAPI {
   Future<BitWalletInfo> getWallet() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String address = prefs.getString('btc_wallet');
-    String secret = prefs.getString('btc_secret');
-    if (address == null || address == '' || secret == null) {
-      prefs.setString('btc_wallet', 'mrbskbzf3A9qd7dcxSLxQWCp4jEnH5gu2y');
-      prefs.setString(
-          'btc_secret', '91tdQT7rZ7daMvRrEh5Ti7AcrckFTfT1aQU5Ri1ACQTanp3oqPK');
+    String wif = prefs.getString('btc_wif');
+    if (address == null || address == '' || wif == null) {
+      BitWalletInfo walletInfo = generateTestNetAddress();
+      prefs.setString('btc_wallet', walletInfo.address);
+      prefs.setString('btc_wif', walletInfo.wif);
       return new BitWalletInfo(
-          '91tdQT7rZ7daMvRrEh5Ti7AcrckFTfT1aQU5Ri1ACQTanp3oqPK',
-          'mrbskbzf3A9qd7dcxSLxQWCp4jEnH5gu2y');
+          walletInfo.wif,
+          walletInfo.address);
     } else {
-      return new BitWalletInfo(secret, address);
+      return new BitWalletInfo(wif, address);
     }
   }
 
@@ -101,13 +103,7 @@ class BitCoinAPI {
 
   Future<String> createTransaction(
       BuildContext context, String recipent, double amount) async {
-    BitWalletInfo testwallet = generateTestNetAddress();
-    print('test wif: ' + testwallet.wif);
-    print('test address:' + testwallet.address);
-
     BitWalletInfo wallet = await getWallet();
-    print(wallet.address);
-    print(wallet.wif);
     var newtx = {
       "inputs": [
         {

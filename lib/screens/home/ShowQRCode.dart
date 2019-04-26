@@ -45,8 +45,8 @@ class _ShowQRCodeState extends State<ShowQRCode> {
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFFDEF2F9),
-                  borderRadius: BorderRadius.all(Radius.circular(10))
+                    color: Color(0xFFDEF2F9),
+                    borderRadius: BorderRadius.all(Radius.circular(10))
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 15),
@@ -63,9 +63,9 @@ class _ShowQRCodeState extends State<ShowQRCode> {
                         Text(
                           "(Tap QR symbol to copy your address)",
                           style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            color: Color(0xFF333333),
-                            fontWeight: FontWeight.w300
+                              fontStyle: FontStyle.italic,
+                              color: Color(0xFF333333),
+                              fontWeight: FontWeight.w300
                           ),
                         )
                       ],
@@ -74,31 +74,31 @@ class _ShowQRCodeState extends State<ShowQRCode> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 30),
-                child: GestureDetector(
-                  child: Container(
-                    child: new QrImage(
-                      data: walletAddress,
-                      size: 200,
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: GestureDetector(
+                    child: Container(
+                      child: new QrImage(
+                        data: walletAddress,
+                        size: screenWidth*0.6,
+                      ),
                     ),
-                  ),
-                  onTap: () {
-                    BitCoinAPI().getBalance().then((onValue) {
-                      setState(() {
+                    onTap: () {
+                      BitCoinAPI().getBalance().then((onValue) {
+                        setState(() {
+                        });
                       });
-                    });
-                    Clipboard.setData( new ClipboardData(text: walletAddress));
-                    Fluttertoast.showToast(
-                      msg: "Address is coppied to clipboard",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIos: 1,
-                      backgroundColor: Color(0xFF4AB7E0),
-                      textColor: Color(0xFFFFFFFF),
-                      fontSize: 14,
-                    );
-                  },
-                )
+                      Clipboard.setData( new ClipboardData(text: walletAddress));
+                      Fluttertoast.showToast(
+                        msg: "Address is coppied to clipboard",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIos: 1,
+                        backgroundColor: Color(0xFF4AB7E0),
+                        textColor: Color(0xFFFFFFFF),
+                        fontSize: 14,
+                      );
+                    },
+                  )
               ),
               Row(
                 children: <Widget>[

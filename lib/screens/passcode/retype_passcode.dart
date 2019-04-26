@@ -17,6 +17,7 @@ class RetypePin extends StatefulWidget {
 class _RetypePinState extends State<RetypePin> {
   TextEditingController et;
   String passcodeRetype;
+  bool hasError;
 
   bool checkPinCode() {
     return (passcodeRetype == widget.passcode);
@@ -38,6 +39,7 @@ class _RetypePinState extends State<RetypePin> {
     super.initState();
 
     et = new TextEditingController();
+    hasError = false;
   }
 
   @override
@@ -91,10 +93,11 @@ class _RetypePinState extends State<RetypePin> {
                   hasTextBorderColor: Color(0xFF4AB7E0),
                   maxLength: 4,
                   maskCharacter: "●",
-                  hasError: false,
+                  hasError: hasError,
                   onDone: (text){
                     setState(() {
                       passcodeRetype = text;
+                      hasError = !(passcodeRetype == widget.passcode);
                     });
                   },
                   pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType.AUTO_ADJUST_WIDTH,

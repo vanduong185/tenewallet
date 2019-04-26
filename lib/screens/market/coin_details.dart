@@ -29,15 +29,15 @@ class _CoinDetailsState extends State<CoinDetails> {
           Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 15),
                 child: Container(
                   child: Column(
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5),
-                        child: Text("Market Value", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
+                        child: Text("Price USD", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 14),),
                       ),
-                      Text(coin.marketCapUSD, style: TextStyle(color: Colors.white, fontSize: 12))
+                      Text(coin.priceUSD, style: TextStyle(color: Colors.white, fontSize: 14))
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
@@ -45,15 +45,15 @@ class _CoinDetailsState extends State<CoinDetails> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 15),
                 child: Container(
                   child: Column(
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5),
-                        child: Text("Price Change 1H", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
+                        child: Text("Market Value", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 14),),
                       ),
-                      Text(coin.priceChange1H, style: TextStyle(color: Colors.white, fontSize: 12))
+                      Text(coin.marketCapUSD, style: TextStyle(color: Colors.white, fontSize: 14))
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
@@ -61,20 +61,20 @@ class _CoinDetailsState extends State<CoinDetails> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 15),
                 child: Container(
                   child: Column(
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5),
-                        child: Text("Price Change 24H", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
+                        child: Text("Ranking of Market Value", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 14),),
                       ),
-                      Text(coin.priceChange24H, style: TextStyle(color: Colors.white, fontSize: 12))
+                      Text(coin.rank, style: TextStyle(color: Colors.white, fontSize: 14))
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                 ),
-              )
+              ),
             ],
             crossAxisAlignment: CrossAxisAlignment.start,
           ),
@@ -82,15 +82,15 @@ class _CoinDetailsState extends State<CoinDetails> {
           Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 15),
                 child: Container(
                   child: Column(
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5),
-                        child: Text("Ranking of Market Value", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
+                        child: Text("Price Change 1H", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 14),),
                       ),
-                      Text(coin.rank, style: TextStyle(color: Colors.white, fontSize: 12))
+                      Text(coin.priceChange1H, style: TextStyle(color: Colors.white, fontSize: 14))
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
@@ -98,15 +98,15 @@ class _CoinDetailsState extends State<CoinDetails> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 15),
                 child: Container(
                   child: Column(
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5),
-                        child: Text("Price Change 7 Days", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
+                        child: Text("Price Change 24H", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 14),),
                       ),
-                      Text(coin.priceChange7D, style: TextStyle(color: Colors.white, fontSize: 12))
+                      Text(coin.priceChange24H, style: TextStyle(color: Colors.white, fontSize: 14))
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
@@ -114,20 +114,20 @@ class _CoinDetailsState extends State<CoinDetails> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 15),
                 child: Container(
                   child: Column(
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5),
-                        child: Text("Price USD", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 12),),
+                        child: Text("Price Change 7 Days", style: TextStyle(color: Color(0xFFA9DFF1), fontSize: 14),),
                       ),
-                      Text(coin.priceUSD, style: TextStyle(color: Colors.white, fontSize: 12))
+                      Text(coin.priceChange7D, style: TextStyle(color: Colors.white, fontSize: 14))
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                 ),
-              )
+              ),
             ],
             crossAxisAlignment: CrossAxisAlignment.start,
           )

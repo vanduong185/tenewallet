@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class GeneralSetting extends StatefulWidget {
@@ -22,14 +24,17 @@ class _GeneralSettingState extends State<GeneralSetting> {
               border: Border(bottom: BorderSide(color: Color(0xFFC7C7C7), width: 1))
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(vertical: 15),
             child: Row(
               children: <Widget>[
                 Row(
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(right: 5),
-                      child: Icon(TeneIcon.currency, color: Color(0xFF4AB7E0), size: 24,),
+                      child: new SvgPicture.asset(
+                        "lib/assets/fonts/svg/currency.svg",
+                        color: Color(0xFF4AB7E0)
+                      ),
                     ),
                     Text("Currency", style: TextStyle(color: Color(0xFF333333), fontSize: 14, fontWeight: FontWeight.w300),)
                   ],

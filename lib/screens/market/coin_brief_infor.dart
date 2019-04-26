@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class CoinBriefInfor extends StatelessWidget {
   @override
@@ -8,22 +9,8 @@ class CoinBriefInfor extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
-                color: Color(0xFFF5B300),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Icon(
-                  Icons.attach_money,
-                  size: 30,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            padding: const EdgeInsets.only(right: 10),
+            child: Image.asset("image/bitcoin.png", height: 60),
           ),
           Column(
             children: <Widget>[

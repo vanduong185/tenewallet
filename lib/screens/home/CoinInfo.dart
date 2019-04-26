@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tenewallet/screens/Statics.dart';
 import 'package:tenewallet/screens/market/market.dart';
 import 'package:tenewallet/services/network.dart';
 import 'package:tenewallet/services/BitCoinAPI.dart';
-import 'package:tenewallet/screens/Statics.dart';
 import 'dart:async';
 
 class CoinInfor extends StatefulWidget {
@@ -20,11 +20,11 @@ class CoinInfor extends StatefulWidget {
 class _CoinInforState extends State<CoinInfor> with WidgetsBindingObserver, RouteAware {
   var coin = {
     "name": "BTC",
-    "value": "15454421",
-    "lastest_price": "4,5562",
-    "change": "2.233",
-    "trend": "up"
+    "currentPrice": "",
+    "isUp": false,
+    "percentChange": 1.0,
   };
+
   String balance = '';
   String currentPrice = '';
   bool isLoading;
@@ -105,7 +105,7 @@ class _CoinInforState extends State<CoinInfor> with WidgetsBindingObserver, Rout
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: Container(
         height: 120,
         child: Column(
@@ -149,7 +149,7 @@ class _CoinInforState extends State<CoinInfor> with WidgetsBindingObserver, Rout
                     'Balance: ' + balance + ' ฿',
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 26,
+                        fontSize: 18,
                         fontWeight: FontWeight.w400),
                   ),
                 ],

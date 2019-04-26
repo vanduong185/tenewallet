@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 import 'package:tenewallet/models/PassCodeInfo.dart';
 import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
@@ -62,7 +64,10 @@ class _SecuritySettingState extends State<SecuritySetting> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(right: 5),
-                      child: Icon(TeneIcon.passcode, color: Color(0xFF4AB7E0), size: 24,),
+                      child: new SvgPicture.asset(
+                          "lib/assets/fonts/svg/passcode.svg",
+                          color: Color(0xFF4AB7E0)
+                      ),
                     ),
                     Text("Passcode", style: TextStyle(color: Color(0xFF333333), fontSize: 14, fontWeight: FontWeight.w300),)
                   ],

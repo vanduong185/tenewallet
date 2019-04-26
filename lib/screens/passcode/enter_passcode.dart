@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:tenewallet/screens/index.dart';
 
@@ -9,18 +10,78 @@ class EnterPasscode extends StatefulWidget {
   EnterPasscode(this.passcode);
 
   @override
-  _EnterPasscodeState createState() => _EnterPasscodeState();
+  State<StatefulWidget> createState() => _EnterPasscodeState();
 }
 
 class _EnterPasscodeState extends State<EnterPasscode> {
-  TextEditingController et;
   bool hasError;
+  List<PinCodeTextField> listPin;
+  int index;
+  PinCodeTextField pin;
+
+  PinCodeTextField generateNewPin () {
+    return new PinCodeTextField(
+      key: Key(index.toString()),
+      autofocus: true,
+      controller: new TextEditingController(),
+      hideCharacter: true,
+      highlight: true,
+      highlightColor: Color(0xFF4AB7E0),
+      defaultBorderColor: Color(0xFF707070),
+      hasTextBorderColor: Color(0xFF4AB7E0),
+      maxLength: 4,
+      maskCharacter: "●",
+      hasError: hasError,
+      onDone: (text) {
+        if (text == widget.passcode) {
+          setState(() {
+            hasError = false;
+          });
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => Index())
+          );
+        }
+        else {
+          setState(() {
+            //hasError = true;
+            Fluttertoast.showToast(
+                msg: "Your passcode doesn't match.",
+                backgroundColor: Colors.red[400],
+                textColor: Colors.white,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIos: 1,
+                fontSize: 14
+            );
+            index++;
+            listPin.add(generateNewPin());
+          });
+        }
+      },
+      pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType
+          .AUTO_ADJUST_WIDTH,
+      wrapAlignment: WrapAlignment.start,
+      pinBoxDecoration: ProvidedPinBoxDecoration.defaultPinBoxDecoration,
+      pinTextStyle: TextStyle(fontSize: 16, color: Color(0xFF1980BA)),
+      pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation
+          .defaultNoTransition,
+      pinTextAnimatedSwitcherDuration: Duration(milliseconds: 100),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     hasError = false;
-    et = new TextEditingController();
+    index = 0;
+    listPin = [];
+    listPin.add(generateNewPin());
+  }
+
+  Widget renderPincode() {
+    if (listPin.length > 0) {
+      return listPin[index];
+    }
   }
 
   @override
@@ -64,43 +125,8 @@ class _EnterPasscodeState extends State<EnterPasscode> {
 
               Padding(
                 padding: const EdgeInsets.only(bottom: 30),
-                child: PinCodeTextField(
-                  autofocus: true,
-                  controller: et,
-                  hideCharacter: true,
-                  highlight: true,
-                  highlightColor: Color(0xFF4AB7E0),
-                  defaultBorderColor: Color(0xFF707070),
-                  hasTextBorderColor: Color(0xFF4AB7E0),
-                  maxLength: 4,
-                  maskCharacter: "●",
-                  hasError: hasError,
-                  onDone: (text){
-                    if (text == widget.passcode) {
-                      setState(() {
-                        hasError = false;
-                      });
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => Index())
-                      );
-                    }
-                    else {
-                      setState(() {
-                        hasError = true;
-                      });
-                    }
-                  },
-                  pinCodeTextFieldLayoutType: PinCodeTextFieldLayoutType.AUTO_ADJUST_WIDTH,
-                  wrapAlignment: WrapAlignment.start,
-                  pinBoxDecoration: ProvidedPinBoxDecoration.defaultPinBoxDecoration,
-                  pinTextStyle: TextStyle(fontSize: 16, color: Color(0xFF1980BA)),
-                  pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation.defaultNoTransition,
-                  pinTextAnimatedSwitcherDuration: Duration(milliseconds: 100),
-
-                ),
+                child: renderPincode(),
               ),
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: GestureDetector(

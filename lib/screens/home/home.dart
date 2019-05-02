@@ -3,7 +3,7 @@ import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_web_view/flutter_web_view.dart';
 import "package:tenewallet/screens/wallet/Sending.dart";
-import "package:tenewallet/screens/setting/setting.dart";
+import "package:tenewallet/screens/setting/Setting.dart";
 import 'package:tenewallet/screens/home/CoinInfo.dart';
 import 'package:tenewallet/screens/home/ShowQRCode.dart';
 import 'package:tenewallet/screens/home/ScanQRCode.dart';
@@ -235,7 +235,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver{
                   child: IconButton(
                     icon: new SvgPicture.asset(
                       "lib/assets/fonts/svg/setting.svg",
-                      color: Color(0xFFA9DFF1)
+                      color: Colors.white
                     ),
                     tooltip: "Settings",
                     onPressed: () {

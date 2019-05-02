@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:tenewallet/screens/setting/security.dart';
-import 'package:tenewallet/screens/setting/general.dart';
-import 'package:tenewallet/screens/setting/other/other.dart';
+import 'package:tenewallet/screens/setting/Security.dart';
+import 'package:tenewallet/screens/setting/general/General.dart';
+import 'package:tenewallet/screens/setting/other/Other.dart';
 
 class Setting extends StatefulWidget {
   @override

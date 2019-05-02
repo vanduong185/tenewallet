@@ -89,6 +89,7 @@ class _CoinInforState extends State<CoinInfor> with WidgetsBindingObserver, Rout
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    widget.QRCodeController?.dispose();
     super.dispose();
   }
 
@@ -96,7 +97,10 @@ class _CoinInforState extends State<CoinInfor> with WidgetsBindingObserver, Rout
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
+      widget.QRCodeController?.startScanning();
       doInit();
+    } else if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive || state == AppLifecycleState.suspending) {
+      widget.QRCodeController?.stopScanning();
     }
   }
 

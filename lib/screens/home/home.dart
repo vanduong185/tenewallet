@@ -15,7 +15,7 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver{
   var crypto = {
     "name": "Bitcoin",
     "balance": "0",
@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance.addObserver(this);
     scrollController = new ScrollController();
 
     availableCameras().then((list_camera) {

@@ -1,7 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
-class CoinBriefInfor extends StatelessWidget {
+import 'package:tenewallet/models/CoinInfo.dart';
+
+class CoinBriefInfor extends StatefulWidget {
+  Coin _coin;
+
+  CoinBriefInfor(this._coin);
+
+  _CoinBriefInforState createState() => _CoinBriefInforState();
+}
+
+class _CoinBriefInforState extends State<CoinBriefInfor> {
+  Widget renderPriceChange(String priceChange) {
+    
+    double pc = double.parse(priceChange.substring(0, priceChange.length-1));
+
+    return Row(
+      children: <Widget>[
+        Icon(
+          (pc < 0) ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+          size: 18,
+          color: (pc < 0) ? Color(0xFFFF6B6B) : Color(0xFF8BEB4D),
+        ),
+        Text(
+          pc.abs().toString() + "%",
+          style: TextStyle(
+              fontSize: 18,
+              color: (pc < 0) ? Color(0xFFFF6B6B) : Color(0xFF8BEB4D)
+          ),
+        )
+      ],
+      mainAxisAlignment: MainAxisAlignment.start,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +55,7 @@ class CoinBriefInfor extends StatelessWidget {
                     size: 20,
                   ),
                   Text(
-                    "4000",
+                    widget._coin.priceUSD.substring(1),
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 36,
@@ -31,28 +64,7 @@ class CoinBriefInfor extends StatelessWidget {
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
-              Row(
-                children: <Widget>[
-                  Text(
-                    "0.9BTC",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w200),
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_up,
-                    size: 18,
-                    color: Color(0xFF8BEB4D),
-                  ),
-                  Text(
-                    "12%",
-                    style: TextStyle(
-                        fontSize: 18, color: Color(0xFF8BEB4D)),
-                  )
-                ],
-                mainAxisAlignment: MainAxisAlignment.start,
-              )
+              renderPriceChange(widget._coin.priceChange1H)
             ],
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,

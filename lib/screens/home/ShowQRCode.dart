@@ -102,30 +102,6 @@ class _ShowQRCodeState extends State<ShowQRCode> {
               ),
               Row(
                 children: <Widget>[
-//                  GestureDetector(
-//                    child: Column(
-//                      children: <Widget>[
-//                        Icon(
-//                          FontAwesomeIcons.longArrowAltRight,
-//                          color: Color(0xFFC5C5C5),
-//                        ),
-//                        Text(
-//                          "SEND",
-//                          style: TextStyle(
-//                              fontWeight: FontWeight.w500,
-//                              color: Color(0xFFC5C5C5)
-//                          ),
-//                        )
-//                      ],
-//                    ),
-//                    onTap: () {
-//                      widget.scrollController.animateTo(
-//                        widget.scrollController.offset + screenWidth,
-//                        curve: Curves.linear,
-//                        duration: Duration(milliseconds: 200)
-//                      );
-//                    },
-//                  ),
                   GestureDetector(
                     child: Column(
                       children: <Widget>[

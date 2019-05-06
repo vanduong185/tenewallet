@@ -26,29 +26,34 @@ class _MarketState extends State<Market> {
   CoinChart coinChart;
 
   getData() {
-    Firestore.instance.collection("coinlist").snapshots().listen((data) {
-      if (data.documents.length > 0) {
-        var doc = data.documents[0].data;
-        coin = new Coin();
-        setState(() {
-          coin.id = doc["id"];
-          coin.marketCapUSD = doc["marketCapUSD"];
-          coin.img = doc["img"];
-          coin.name = doc["name"];
-          coin.priceChange1H = doc["priceChange1H"];
-          coin.priceChange24H = doc["priceChange24H"];
-          coin.priceChange7D = doc["priceChange7D"];
-          coin.priceUSD = doc["priceUSD"];
-          coin.rank = doc["rank"];
-          coin.symbolText = doc["symbolText"];
-          coin.volumeUSD = doc["volumeUSD"];
-        });
-      }
+    try {
+      Firestore.instance.collection("coinlist").snapshots().listen((data) {
+        if (data.documents.length > 0) {
+          var doc = data.documents[0].data;
+          coin = new Coin();
+          setState(() {
+            coin.id = doc["id"];
+            coin.marketCapUSD = doc["marketCapUSD"];
+            coin.img = doc["img"];
+            coin.name = doc["name"];
+            coin.priceChange1H = doc["priceChange1H"];
+            coin.priceChange24H = doc["priceChange24H"];
+            coin.priceChange7D = doc["priceChange7D"];
+            coin.priceUSD = doc["priceUSD"];
+            coin.rank = doc["rank"];
+            coin.symbolText = doc["symbolText"];
+            coin.volumeUSD = doc["volumeUSD"];
+          });
+        }
 
-      setState(() {
-        isLoading = false;
+        setState(() {
+          isLoading = false;
+        });
       });
-    });
+    }
+    catch (err) {
+
+    }
   }
 
   Future<Null> refresh() async {
@@ -90,7 +95,7 @@ class _MarketState extends State<Market> {
                 Padding(
                     padding:
                     EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                    child: CoinBriefInfor()),
+                    child: CoinBriefInfor(coin)),
                 coinChart,
                 Padding(
                     padding: const EdgeInsets.symmetric(

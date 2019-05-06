@@ -199,7 +199,7 @@ class _CoinInforState extends State<CoinInfor> with WidgetsBindingObserver, Rout
                   ),
                 ),
                 Text(
-                  'Price: ' + currentPrice + ' \$  ',
+                  currentPrice + ' \$  ',
                   style: TextStyle(
                       color: Colors.white, fontSize: 21, fontWeight: FontWeight.w300),
                 ),

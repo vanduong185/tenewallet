@@ -9,6 +9,7 @@ import 'package:tenewallet/screens/home/ShowQRCode.dart';
 import 'package:tenewallet/screens/home/ScanQRCode.dart';
 import 'package:tenewallet/screens/Statics.dart';
 import 'package:tenewallet/widgets/background.dart';
+import 'package:tenewallet/screens/home/DrawerMenu.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -174,7 +175,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver{
                           'https://bitcoinfaucet.uo1.net/send.php',
                           javaScriptEnabled: true,
                           barColor: Colors.green,
-                          tintColor: Colors.white);
+                          tintColor: Colors.white,
+                      );
                       flutterWebView.onToolbarAction.listen((identifier) {
                         switch (identifier) {
                           case 1:
@@ -260,6 +262,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver{
               ),
               elevation: 0,
             ),
+            drawer: DrawerMenu(QRCodeController),
             body: SingleChildScrollView(
                 child: Column(children: <Widget>[
               CoinInfor(QRCodeController),

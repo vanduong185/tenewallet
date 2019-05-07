@@ -26,22 +26,26 @@ class _ConfirmState extends State<Confirm> {
   List<Widget> renderPhrase() {
     return shufflePhrase.map((phrase) {
       return GestureDetector(
-        child: Container(
-          width: 80,
-          decoration: BoxDecoration(
-              border: Border.all(color: Color(0xFF1980BA), width: 1),
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              color: listConfirmPhrase.indexOf(phrase) < 0 ? Colors.white : Color(0xFF1980BA)
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Center(
-              child: Text(
-                phrase,
-                style: TextStyle(color: listConfirmPhrase.indexOf(phrase) < 0 ? Color(0xFF1980BA) : Colors.white),
+        child: Row(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Color(0xFF1980BA), width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  color: listConfirmPhrase.indexOf(phrase) < 0 ? Colors.white : Color(0xFF1980BA)
               ),
-            ),
-          ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Center(
+                  child: Text(
+                    phrase,
+                    style: TextStyle(color: listConfirmPhrase.indexOf(phrase) < 0 ? Color(0xFF1980BA) : Colors.white),
+                  ),
+                ),
+              ),
+            )
+          ],
+          mainAxisSize: MainAxisSize.min,
         ),
         onTap: () {
           setState(() {
@@ -51,8 +55,6 @@ class _ConfirmState extends State<Confirm> {
             else {
               listConfirmPhrase.removeAt(listConfirmPhrase.indexOf(phrase));
             }
-
-            print(listConfirmPhrase);
           });
         },
       );
@@ -62,18 +64,22 @@ class _ConfirmState extends State<Confirm> {
   List<Widget> renderConfirmPhrase() {
     if (listConfirmPhrase.length > 0) {
       return listConfirmPhrase.map((phrase) {
-        return Container(
-          width: 80,
-          decoration: BoxDecoration(
-              border: Border.all(color: Color(0xFF1980BA), width: 1),
-              borderRadius: BorderRadius.all(Radius.circular(5))
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Center(
-              child: Text(phrase, style: TextStyle(color: Color(0xFF1980BA)),),
-            ),
-          ),
+        return Row(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Color(0xFF1980BA), width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(5))
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Center(
+                  child: Text(phrase, style: TextStyle(color: Color(0xFF1980BA)),),
+                ),
+              ),
+            )
+          ],
+          mainAxisSize: MainAxisSize.min,
         );
       }).toList();
     }

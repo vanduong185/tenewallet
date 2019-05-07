@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'package:tenewallet/services/network.dart';
 import 'package:tenewallet/screens/recovery/Confirm.dart';
 
 class Recovery extends StatefulWidget {
@@ -11,11 +12,19 @@ class Recovery extends StatefulWidget {
 
 class _RecoveryState extends State<Recovery> {
   List<String> listPhrase;
+  Network network;
 
   @override
   void initState() {
     super.initState();
-    listPhrase = ["leader", "enable", "blouse", "car", "defense", "phone", "alien", "ordinary", "rescue", "tube", "employ", "fashion"];
+    listPhrase = [];
+
+    network = new Network();
+    network.getWords().then((words) {
+      setState(() {
+        listPhrase = words;
+      });
+    });
   }
 
   @override
@@ -64,11 +73,17 @@ class _RecoveryState extends State<Recovery> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(15),
-                  child: Text(
-                    listPhrase.join(" "),
-                    style: TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center
-                  ),
+                  child: listPhrase.length == 0
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFA9DFF1))
+                        )
+                    )
+                    : Text(
+                      listPhrase.join(" "),
+                      style: TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center
+                    ),
                 ),
               ),
             ),
@@ -138,10 +153,12 @@ class _RecoveryState extends State<Recovery> {
                   ),
                 ),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Confirm(listPhrase.join(" ")))
-                  );
+                  if (listPhrase.length > 0) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Confirm(listPhrase.join(" ")))
+                    );
+                  }
                 },
               ),
             )

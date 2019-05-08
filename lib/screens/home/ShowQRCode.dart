@@ -118,7 +118,7 @@ class _ShowQRCodeState extends State<ShowQRCode> {
                       ],
                     ),
                     onTap: () {
-                      Share.share('This my address wallet');
+                      Share.share('This my wallet address: ' + walletAddress);
                     },
                   )
                 ],

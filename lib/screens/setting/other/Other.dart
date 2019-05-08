@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:tenewallet/screens/setting/other/About.dart';
-import 'package:tenewallet/assets/fonts/tene_icon_icons.dart';
 
 class OtherSetting extends StatefulWidget {
   @override
@@ -17,7 +16,7 @@ class _OtherSettingState extends State<OtherSetting> {
   }
 
   _launchEmailApp() async {
-    const url = 'mailto:support@teneocto.io?subject=[support]&body=';
+    const url = 'mailto:info@teneocto.io?subject=[Support - TeneWallet]&body=';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

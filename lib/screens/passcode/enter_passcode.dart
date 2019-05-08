@@ -20,10 +20,11 @@ class _EnterPasscodeState extends State<EnterPasscode> {
   PinCodeTextField pin;
 
   PinCodeTextField generateNewPin () {
+    TextEditingController t = new TextEditingController();
     return new PinCodeTextField(
       key: Key(index.toString()),
       autofocus: true,
-      controller: new TextEditingController(),
+      controller: t,
       hideCharacter: true,
       highlight: true,
       highlightColor: Color(0xFF4AB7E0),
@@ -81,6 +82,9 @@ class _EnterPasscodeState extends State<EnterPasscode> {
   Widget renderPincode() {
     if (listPin.length > 0) {
       return listPin[index];
+    }
+    else {
+      return Container();
     }
   }
 

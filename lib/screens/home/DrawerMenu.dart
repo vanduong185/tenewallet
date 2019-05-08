@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import 'package:flutter_web_view/flutter_web_view.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 
 import "package:tenewallet/screens/recovery/Recovery.dart";
@@ -63,9 +62,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             Text(
                               "News",
                               style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFF4AB7E0),
-                                  fontWeight: FontWeight.w500),
+                                  color: Color(0xFF333333),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w300),
                             )
                           ],
                         ),
@@ -120,9 +119,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                           Text(
                             "Rating",
                             style: TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF4AB7E0),
-                                fontWeight: FontWeight.w500),
+                                color: Color(0xFF333333),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300),
                           )
                         ],
                       ),
@@ -153,9 +152,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             Text(
                               "Recovery",
                               style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFF4AB7E0),
-                                  fontWeight: FontWeight.w500),
+                                  color: Color(0xFF333333),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w300),
                             )
                           ],
                         ),
